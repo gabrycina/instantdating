@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "379650473576",
+    "firebase_url": "https://instant-dating-d60c8.firebaseio.com",
+    "project_id": "instant-dating-d60c8",
+    "storage_bucket": "instant-dating-d60c8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:379650473576:android:83390763ecce6346",
+        "android_client_info": {
+          "package_name": "com.gabrielecina.instant_dating"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "379650473576-qe5q9vk8phsdj52ske3aeuam349eot28.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBAg-5NpD8WX_y87NVhUvXQNM9oRAM74w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "379650473576-qe5q9vk8phsdj52ske3aeuam349eot28.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
