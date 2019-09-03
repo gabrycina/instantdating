@@ -22,14 +22,21 @@ class _HomeScreenState extends State<HomeScreen> {
   void setupUser() async {
     loggedUser = await profileDataManager.getCurrentUser(widget.user);
     accountName = loggedUser.email;
-    profileDataManager.isNewUserAndSetup(loggedUser);
-    profileDataManager.listenCurrentUserLocation(accountName);
+    await profileDataManager.isNewUserAndSetup(loggedUser);
+    await profileDataManager.listenCurrentUserLocation(accountName);
   }
 
   @override
   void initState() {
     super.initState();
     setupUser();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    profileDataManager.listenCurrentUserLocation("stop");
   }
 
   @override

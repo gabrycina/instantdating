@@ -6,7 +6,7 @@ final _firestore = Firestore.instance;
 class DevicesLocation extends StatelessWidget {
   DevicesLocation({this.accountName});
 
-  String accountName;
+  final String accountName;
 
   @override
   Widget build(BuildContext context) {
