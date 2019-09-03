@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "379650473576-iivrlf6e8b8imu9pnebltocnvsq5jsth.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gabrielecina.instant_dating",
+            "certificate_hash": "0ebb88acb32bc5b49c99a0ce155e2ac7098828a2"
+          }
+        },
+        {
           "client_id": "379650473576-qe5q9vk8phsdj52ske3aeuam349eot28.apps.googleusercontent.com",
           "client_type": 3
         }

@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:instant_dating/components/action_button.dart';
 import 'package:instant_dating/constants.dart';
 import 'package:instant_dating/utilities/user_account.dart';
-import 'home_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -14,7 +12,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _auth = FirebaseAuth.instance;
   String email, password;
   bool isLoading = false;
 

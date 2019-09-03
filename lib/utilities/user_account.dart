@@ -12,7 +12,16 @@ class UserAccount {
     try {
       var user = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
-      if (user != null) Navigator.pushNamed(context, HomeScreen.id);
+
+      if (user != null)
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomeScreen(
+              user: user,
+            ),
+          ),
+        );
     } catch (e) {
       print(e);
     }
@@ -26,20 +35,23 @@ class UserAccount {
         builder: (context) => WelcomeScreen(),
       ),
     );
+    //TODO: Remove debug Prints
     print('email sign out');
   }
 
   googleLogin(BuildContext context) async {
     try {
       final googleUser = await _googleSignIn.signIn();
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HomeScreen(
-            user: googleUser,
+
+      if (googleUser != null)
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomeScreen(
+              user: googleUser,
+            ),
           ),
-        ),
-      );
+        );
     } catch (e) {
       print(e);
     }
