@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:instant_dating/components/action_buttton.dart';
+import 'package:instant_dating/components/action_button.dart';
 import 'package:instant_dating/constants.dart';
 import 'home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -40,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 TextField(
                   keyboardType: TextInputType.emailAddress,
                   maxLines: 1,
-                  onChanged: (value){
+                  onChanged: (value) {
                     email = value;
                   },
                   decoration:
@@ -52,7 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 TextField(
                   obscureText: true,
                   maxLines: 1,
-                  onChanged: (value){
+                  onChanged: (value) {
                     password = value;
                   },
                   decoration:
@@ -69,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     try {
                       var user = await _auth.signInWithEmailAndPassword(
                           email: email, password: password);
-                      if(user != null)
+                      if (user != null)
                         Navigator.pushNamed(context, HomeScreen.id);
                     } catch (e) {
                       print(e);

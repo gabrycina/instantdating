@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:instant_dating/constants.dart';
-import 'package:instant_dating/components/action_buttton.dart';
+import 'package:instant_dating/components/action_button.dart';
 import 'home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -40,7 +40,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 TextField(
                   keyboardType: TextInputType.emailAddress,
                   maxLines: 1,
-                  onChanged: (value){
+                  onChanged: (value) {
                     email = value;
                   },
                   decoration:
@@ -51,7 +51,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 ),
                 TextField(
                   obscureText: true,
-                  onChanged: (value){
+                  onChanged: (value) {
                     password = value;
                   },
                   maxLines: 1,
@@ -69,7 +69,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     try {
                       var newUser = await _auth.createUserWithEmailAndPassword(
                           email: email, password: password);
-                      if(newUser != null)
+                      if (newUser != null)
                         Navigator.pushNamed(context, HomeScreen.id);
                     } catch (e) {
                       print(e);
