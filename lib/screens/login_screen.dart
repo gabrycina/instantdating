@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:instant_dating/components/action_button.dart';
 import 'package:instant_dating/constants.dart';
+import 'package:instant_dating/utilities/user_account.dart';
 import 'home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -66,14 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     setState(() {
                       isLoading = true;
                     });
-                    try {
-                      var user = await _auth.signInWithEmailAndPassword(
-                          email: email, password: password);
-                      if (user != null)
-                        Navigator.pushNamed(context, HomeScreen.id);
-                    } catch (e) {
-                      print(e);
-                    }
+                    await UserAccount().login(context, email, password);
                     setState(() {
                       isLoading = false;
                     });

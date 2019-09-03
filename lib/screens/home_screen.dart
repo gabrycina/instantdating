@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:instant_dating/screens/welcome_screen.dart';
 import 'package:location/location.dart';
 import 'package:instant_dating/components/devices_location_list.dart';
+import 'package:instant_dating/utilities/user_account.dart';
 
 final _firestore = Firestore.instance;
 
@@ -63,29 +62,6 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  _googleLogout() async {
-    final GoogleSignIn _googleSignIn = GoogleSignIn();
-    await _googleSignIn.signOut();
-    print('google sign out');
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => WelcomeScreen(),
-      ),
-    );
-  }
-
-  _logout() async {
-    await _auth.signOut();
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => WelcomeScreen(),
-      ),
-    );
-    print('email sign out');
-  }
-
   @override
   void initState() {
     super.initState();
@@ -103,8 +79,9 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: EdgeInsets.only(right: 8.0),
             child: IconButton(
               icon: Icon(Icons.exit_to_app),
-              onPressed: () =>
-                  widget.user != null ? _googleLogout() : _logout(),
+              onPressed: () => widget.user != null
+                  ? UserAccount().googleLogout(context)
+                  : UserAccount().logout(context),
             ),
           ),
         ],
