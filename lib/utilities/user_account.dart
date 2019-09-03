@@ -12,31 +12,6 @@ class UserAccount {
   bool isLoggedIn = false;
   bool isLoading = false;
 
-
-  isSignedIn(BuildContext context) async {
-    //TODO:Set isLoading inside the component
-    //isLoading = true;
-
-    prefs = await SharedPreferences.getInstance();
-
-    isLoggedIn = await _googleSignIn.isSignedIn();
-    if(isLoggedIn){
-      GoogleSignInAccount user = _googleSignIn.currentUser;
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HomeScreen(
-            user: user,
-          ),
-        ),
-      );
-    }
-
-    //TODO:Set isLoading inside the component to false
-    //isLoading = false;
-  }
-
-
   Future<void> login(BuildContext context, String email, String password) async {
     try {
       var user = await _auth.signInWithEmailAndPassword(
@@ -98,4 +73,8 @@ class UserAccount {
       ),
     );
   }
+
+
+
+
 }

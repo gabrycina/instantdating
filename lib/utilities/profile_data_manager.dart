@@ -89,4 +89,5 @@ class ProfileDataManager {
       print("Location Stream subscription stopped");
     }
   }
+
 }

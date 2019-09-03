@@ -62,6 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Expanded(
             child: DevicesLocation(
               accountName: accountName,
+              user: loggedUser,
             ),
           ),
         ],

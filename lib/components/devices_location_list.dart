@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 final _firestore = Firestore.instance;
 
 class DevicesLocation extends StatelessWidget {
-  DevicesLocation({this.accountName});
+  DevicesLocation({this.accountName, this. user});
 
   final String accountName;
+  final dynamic user;
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +36,12 @@ class DevicesLocation extends StatelessWidget {
                 leading: Icon(Icons.phone_iphone),
                 title: Text(
                     '$userEmail, Lat: $userLatitude , Long: $userLongitude'),
+                trailing: GestureDetector(
+                  child: Icon(Icons.add_circle_outline),
+                  onTap: () async {
+                    await sendPoke(userEmail, user);
+                  },
+                ),
               ),
             );
           }
@@ -44,5 +52,23 @@ class DevicesLocation extends StatelessWidget {
         );
       },
     );
+  }
+
+  Future<void> sendPoke(String receiverEmail, dynamic user) async {
+    DocumentSnapshot docRef = await _firestore.collection('devicesLocation').document(user.email).get();
+
+    print(user);
+    if (user != null) {
+      _firestore
+          .collection('devicesLocation')
+          .document(receiverEmail)
+          .collection('pokes')
+          .add({
+        'sender': user.email,
+        'position': docRef.data['position'],
+      });
+    } else {
+      Fluttertoast.showToast(msg: 'You Need to Login First');
+    }
   }
 }
