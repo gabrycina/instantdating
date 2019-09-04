@@ -55,16 +55,15 @@ class DevicesLocation extends StatelessWidget {
   }
 
   Future<void> sendPoke(String receiverEmail, dynamic user) async {
-    DocumentSnapshot docRef = await _firestore.collection('devicesLocation').document(user.email).get();
-
-    print(user);
-    if (user != null) {
+    var loggedUser = user;
+    DocumentSnapshot docRef = await _firestore.collection('devicesLocation').document(loggedUser.email).get();
+    if (loggedUser != null) {
       _firestore
           .collection('devicesLocation')
           .document(receiverEmail)
           .collection('pokes')
           .add({
-        'sender': user.email,
+        'sender': loggedUser.email,
         'position': docRef.data['position'],
       });
     } else {

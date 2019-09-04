@@ -3,12 +3,10 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:instant_dating/screens/home_screen.dart';
 import 'package:instant_dating/screens/welcome_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class UserAccount {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final _auth = FirebaseAuth.instance;
-  SharedPreferences prefs;
   bool isLoggedIn = false;
   bool isLoading = false;
 
@@ -44,8 +42,6 @@ class UserAccount {
   }
 
   Future<void>googleLogin(BuildContext context) async {
-    prefs = await SharedPreferences.getInstance();
-
     try {
       GoogleSignInAccount googleUser = await _googleSignIn.signIn();
 
@@ -73,8 +69,4 @@ class UserAccount {
       ),
     );
   }
-
-
-
-
 }
