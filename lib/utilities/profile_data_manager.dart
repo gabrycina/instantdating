@@ -45,10 +45,10 @@ class ProfileDataManager {
   }
 
   Future<dynamic> getCurrentUser(dynamic user) async {
-    bool isGoogle = user != null;
+    bool isSocial = user != null;
     var loggedUser;
     try {
-      if (isGoogle) {
+      if (isSocial) {
         loggedUser = user;
       } else {
         var user = await _auth.currentUser();
@@ -89,5 +89,4 @@ class ProfileDataManager {
       print("Location Stream subscription stopped");
     }
   }
-
 }

@@ -50,7 +50,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 darkMode: true, // default: false
               ),
               FacebookSignInButton(
-                onPressed: () {},
+                onPressed: () {
+                  UserAccount().facebookLogin(context);
+                },
               )
             ],
           ),
