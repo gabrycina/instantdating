@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class ConvertUserFacebook {
   ConvertUserFacebook(this.user) {
     email = user['email'];

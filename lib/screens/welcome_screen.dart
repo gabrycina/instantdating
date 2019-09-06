@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:instant_dating/components/action_button.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:instant_dating/utilities/user_account.dart';
-import 'login_screen.dart';
-import 'registration_screen.dart';
+//import 'package:instant_dating/components/action_button.dart';
+//import 'login_screen.dart';
+//import 'registration_screen.dart';
 
 class WelcomeScreen extends StatefulWidget {
   static final String id = 'welcome_screen';
@@ -29,31 +29,31 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 width: 150,
                 height: 150,
               ),
-              ActionButton(
-                onTapAction: () {
-                  Navigator.pushNamed(context, LoginScreen.id);
-                },
-                buttonColor: Colors.purple,
-                buttonText: 'Login',
-              ),
-              ActionButton(
-                onTapAction: () {
-                  Navigator.pushNamed(context, RegistrationScreen.id);
-                },
-                buttonColor: Colors.purple[800],
-                buttonText: 'Register',
-              ),
+//              ActionButton(
+//                onTapAction: () {
+//                  Navigator.pushNamed(context, LoginScreen.id);
+//                },
+//                buttonColor: Colors.purple,
+//                buttonText: 'Login',
+//              ),
+//              ActionButton(
+//                onTapAction: () {
+//                  Navigator.pushNamed(context, RegistrationScreen.id);
+//                },
+//                buttonColor: Colors.purple[800],
+//                buttonText: 'Register',
+//              ),
               GoogleSignInButton(
                 onPressed: () {
                   UserAccount().googleLogin(context);
                 },
                 darkMode: true, // default: false
               ),
-              FacebookSignInButton(
-                onPressed: () {
-                  UserAccount().facebookLogin(context);
-                },
-              )
+//              FacebookSignInButton(
+//                onPressed: () {
+//                  UserAccount().facebookLogin(context);
+//                },
+//              )
             ],
           ),
         ),

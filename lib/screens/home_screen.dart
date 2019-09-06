@@ -5,11 +5,11 @@ import 'package:instant_dating/utilities/user_account.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 class HomeScreen extends StatefulWidget {
-  HomeScreen({this.user, this.type});
+  HomeScreen({this.user});
 
   static final id = 'home_screen';
   final user;
-  String type;
+//  final String type;
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -20,7 +20,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   var loggedUser;
   String accountName;
-
   bool isLoading = false;
 
   void setupUser() async {
@@ -28,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
       isLoading = true;
     });
 
-    loggedUser = await profileDataManager.getCurrentUser(widget.user);
+    loggedUser = widget.user;
     accountName = loggedUser.email;
     await profileDataManager.isNewUserAndSetup(loggedUser);
     await profileDataManager.listenCurrentUserLocation(accountName);
@@ -63,16 +62,16 @@ class _HomeScreenState extends State<HomeScreen> {
             child: IconButton(
                 icon: Icon(Icons.exit_to_app),
                 onPressed: () {
-                  switch (widget.type) {
-                    case 'google':
+//                  switch (widget.type) {
+//                    case 'google':
                       UserAccount().googleLogout(context);
-                      break;
-                    case 'facebook':
-                      UserAccount().facebookLogout(context);
-                      break;
-                    case 'email':
-                      UserAccount().logout(context);
-                  }
+//                      break;
+//                    case 'facebook':
+//                      UserAccount().facebookLogout(context);
+//                      break;
+//                    case 'email':
+//                      UserAccount().logout(context);
+//                  }
                 }),
           ),
         ],

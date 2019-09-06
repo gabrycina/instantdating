@@ -1,12 +1,13 @@
-import 'package:firebase_auth/firebase_auth.dart';
+//import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:async';
+//import 'package:firebase_auth/firebase_auth.dart';
 
 class ProfileDataManager {
-  final _auth = FirebaseAuth.instance;
+//  final _auth = FirebaseAuth.instance;
   final _firestore = Firestore.instance;
   SharedPreferences prefs;
 
@@ -22,10 +23,7 @@ class ProfileDataManager {
       final List<DocumentSnapshot> documents = result.documents;
       if (documents.length == 0) {
         // Update data to server if new user
-        _firestore
-            .collection('devicesLocation')
-            .document(loggedUser.email)
-            .setData({
+        _firestore.collection('devicesLocation').document(loggedUser.email).setData({
           'accountName': loggedUser.email,
           'position': GeoPoint(0, 0),
         });
@@ -42,24 +40,6 @@ class ProfileDataManager {
     } else {
       Fluttertoast.showToast(msg: "Sign In Failed");
     }
-  }
-
-  Future<dynamic> getCurrentUser(dynamic user) async {
-    bool isSocial = user != null;
-    var loggedUser;
-    try {
-      if (isSocial) {
-        loggedUser = user;
-      } else {
-        var user = await _auth.currentUser();
-        if (user != null) {
-          loggedUser = user;
-        }
-      }
-    } catch (e) {
-      print(e);
-    }
-    return loggedUser;
   }
 
   Future<void> listenCurrentUserLocation(String accountName) async {
@@ -89,4 +69,24 @@ class ProfileDataManager {
       print("Location Stream subscription stopped");
     }
   }
+
+//  Future<dynamic> getCurrentUser(dynamic user) async {
+//    bool isSocial = type != "email";
+//    var loggedUser;
+//    try {
+//      //
+//      if (isSocial) {
+//        loggedUser = user;
+//      } else {
+//        var user = await _auth.currentUser();
+//        if (user != null) {
+//          loggedUser = user;
+//        }
+//      }
+//    } catch (e) {
+//      print(e);
+//    }
+//    return loggedUser;
+//  }
+
 }
