@@ -3,6 +3,7 @@ import 'package:instant_dating/utilities/profile_data_manager.dart';
 import 'package:instant_dating/components/devices_location_list.dart';
 import 'package:instant_dating/utilities/user_account.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:instant_dating/utilities/notification_handler.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({this.user});
@@ -41,6 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     setupUser();
+    NotificationHandler().setup(context);
   }
 
   @override
@@ -64,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 onPressed: () {
 //                  switch (widget.type) {
 //                    case 'google':
-                      UserAccount().googleLogout(context);
+                  UserAccount().googleLogout(context);
 //                      break;
 //                    case 'facebook':
 //                      UserAccount().facebookLogout(context);

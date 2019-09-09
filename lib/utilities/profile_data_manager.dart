@@ -1,8 +1,10 @@
 //import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:instant_dating/utilities/notification_handler.dart';
 import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:async';
 //import 'package:firebase_auth/firebase_auth.dart';
 
@@ -23,18 +25,24 @@ class ProfileDataManager {
       final List<DocumentSnapshot> documents = result.documents;
       if (documents.length == 0) {
         // Update data to server if new user
-        _firestore.collection('devicesLocation').document(loggedUser.email).setData({
+        _firestore
+            .collection('devicesLocation')
+            .document(loggedUser.email)
+            .setData({
           'accountName': loggedUser.email,
           'position': GeoPoint(0, 0),
+          'token': await NotificationHandler().getToken(),
         });
 
         // Write data to local
         await prefs.setString('accountName', loggedUser.email);
         await prefs.setString('position', GeoPoint(0, 0).toString());
+        await prefs.setString('token', await NotificationHandler().getToken());
       } else {
         // Write data to local
         await prefs.setString('accountName', documents[0]['accountName']);
         await prefs.setString('position', documents[0]['position'].toString());
+        await prefs.setString('token', await documents[0]['token']);
       }
       Fluttertoast.showToast(msg: "Sign in Succeded");
     } else {
