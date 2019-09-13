@@ -1,0 +1,54 @@
+import 'package:flutter/material.dart';
+import 'package:instant_dating/screens/pokes_screen.dart';
+import 'package:instant_dating/screens/user_screen.dart';
+import 'package:instant_dating/screens/home_screen.dart';
+
+class BottomNavigationBarController extends StatefulWidget {
+  @override
+  _BottomNavigationBarControllerState createState() =>
+      _BottomNavigationBarControllerState();
+}
+
+class _BottomNavigationBarControllerState
+    extends State<BottomNavigationBarController> {
+  final List<Widget> pages = [
+    HomeScreen(
+      key: PageStorageKey('home_screen'),
+    ),
+    PokesScreen(
+      key: PageStorageKey('pokes_screen'),
+    ),
+    UserScreen(
+      key: PageStorageKey('user_screen'),
+    ),
+  ];
+
+  final PageStorageBucket bucket = PageStorageBucket();
+
+  int _selectedIndex = 0;
+
+  Widget _bottomNavigationBar(int selectedIndex) => BottomNavigationBar(
+    onTap: (int index) => setState(() => _selectedIndex = index),
+    currentIndex: selectedIndex,
+    items: const <BottomNavigationBarItem>[
+      BottomNavigationBarItem(
+          icon: Icon(Icons.home), title: Text('Home')),
+      BottomNavigationBarItem(
+          icon: Icon(Icons.accesible_forward), title: Text('Pokes')),
+      BottomNavigationBarItem(
+          icon: Icon(Icons.user), title: Text('Account')),
+
+    ],
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      bottomNavigationBar: _bottomNavigationBar(_selectedIndex),
+      body: PageStorage(
+        child: pages[_selectedIndex],
+        bucket: bucket,
+      ),
+    );
+  }
+}
