@@ -19,7 +19,6 @@ class _PokesScreenState extends State<PokesScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     profileDataManager.listenCurrentUserLocation("stop");
   }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:instant_dating/screens/pokes_screen.dart';
+import 'package:instant_dating/screens/user_screen.dart';
 import 'package:instant_dating/utilities/profile_data_manager.dart';
 import 'package:instant_dating/components/devices_location_list.dart';
 import 'package:instant_dating/utilities/user_account.dart';
@@ -75,6 +77,24 @@ class _HomeScreenState extends State<HomeScreen> {
 //                      UserAccount().logout(context);
 //                  }
                 }),
+          ),
+          GestureDetector(
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => UserScreen(user: widget.user),
+              ),
+            ),
+            child: Icon(Icons.supervised_user_circle),
+          ),
+          GestureDetector(
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PokesScreen(user: widget.user),
+              ),
+            ),
+            child: Icon(Icons.sync),
           ),
         ],
       ),
