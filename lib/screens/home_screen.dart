@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:instant_dating/screens/pokes_screen.dart';
 import 'package:instant_dating/screens/user_screen.dart';
-import 'package:instant_dating/utilities/profile_data_manager.dart';
 import 'package:instant_dating/components/devices_location_list.dart';
 import 'package:instant_dating/utilities/user_account.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:instant_dating/utilities/notification_handler.dart';
 
 class HomeScreen extends StatefulWidget {
-  HomeScreen({this.user});
+  HomeScreen({this.user, this.key});
 
   static final id = 'home_screen';
+  final Key key;
   final user;
 //  final String type;
 
@@ -19,39 +17,15 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  ProfileDataManager profileDataManager = ProfileDataManager();
-
   var loggedUser;
   String accountName;
-  bool isLoading = false;
-
-  void setupUser() async {
-    setState(() {
-      isLoading = true;
-    });
-
-    loggedUser = widget.user;
-    accountName = loggedUser.email;
-    await profileDataManager.isNewUserAndSetup(loggedUser);
-    await profileDataManager.listenCurrentUserLocation(accountName);
-
-    setState(() {
-      isLoading = false;
-    });
-  }
 
   @override
   void initState() {
+    // TODO: implement initState
     super.initState();
-    setupUser();
-    NotificationHandler().setup(context);
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    profileDataManager.listenCurrentUserLocation("stop");
+    loggedUser = widget.user;
+    accountName = loggedUser.email;
   }
 
   @override
@@ -98,8 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: ModalProgressHUD(
-        inAsyncCall: isLoading,
+      body: SafeArea(
         child: Column(
           children: <Widget>[
             Expanded(

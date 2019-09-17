@@ -27,27 +27,20 @@ class ReceivedPokes extends StatelessWidget {
         final receivedPokes = snapshot.data.documents;
         List<ListTile> usersDocsDecoded = [];
 
-        for (var poke in receivedPokes) {
-          var senderUser = poke.data['sender'];
-          var senderLatitude = poke.data['position'].latitude;
-          var senderLongitude = poke.data['position'].longitude;
+        for (var receivedPoke in receivedPokes) {
+          var senderEmail = receivedPoke.data['sender'];
+          var senderLatitude = receivedPoke.data['position'].latitude;
+          var senderLongitude = receivedPoke.data['position'].longitude;
 
           usersDocsDecoded.add(
             ListTile(
-              leading: Icon(Icons.accessible_forward),
-              title: Text('Poke sent by $senderUser'),
-              subtitle: Text('From: $senderLatitude - $senderLongitude'),
-              trailing: Row(
-                children: <Widget>[
-                  IconButton(
-                    icon: Icon(Icons.check),
-                    onPressed: () {},
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.accessible),
-                    onPressed: () {},
-                  )
-                ],
+              leading: Icon(Icons.notifications_active),
+              title: Text(
+                  '$senderEmail, Lat: $senderLatitude , Long: $senderLongitude'),
+              trailing: GestureDetector(
+                child: Icon(Icons.check),
+                //TODO: implement poke reject/acccept function
+                onTap: () {},
               ),
             ),
           );

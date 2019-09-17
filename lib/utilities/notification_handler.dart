@@ -13,24 +13,26 @@ class NotificationHandler {
       onMessage: (Map<String, dynamic> message) async {
         showDialog(
           context: context,
-          child: AlertDialog(
-            title: Text("Poke"),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text(
-                  "Hai ricevuto un Poke!",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
+          builder: (BuildContext context){
+            return AlertDialog(
+              title: Text("Poke"),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text(
+                    "Hai ricevuto un Poke!",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                RaisedButton(
-                  onPressed: () {},
-                  child: Text('Scopri a chi interessi'),
-                ),
-              ],
-            ),
-          ),
+                  RaisedButton(
+                    onPressed: () {},
+                    child: Text('Scopri a chi interessi'),
+                  ),
+                ],
+              ),
+            );
+          },
         );
       },
       onResume: (Map<String, dynamic> message) async {

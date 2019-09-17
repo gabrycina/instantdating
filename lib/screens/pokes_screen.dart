@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:instant_dating/utilities/profile_data_manager.dart';
+import 'package:instant_dating/components/received_pokes.dart';
 
 class PokesScreen extends StatefulWidget {
-  PokesScreen({this.user});
+  PokesScreen({this.user, this.key});
 
   static final id = 'pokes_screen';
+  final Key key;
   final user;
-//  final String type;
 
   @override
   _PokesScreenState createState() => _PokesScreenState();
 }
 
 class _PokesScreenState extends State<PokesScreen> {
-  ProfileDataManager profileDataManager = ProfileDataManager();
-
-  bool isLoading = false;
+  var loggedUser;
+  String accountName;
 
   @override
-  void dispose() {
-    super.dispose();
-    profileDataManager.listenCurrentUserLocation("stop");
+  void initState() {
+    super.initState();
+    loggedUser = widget.user;
+    accountName = loggedUser.email;
   }
 
   @override
@@ -28,9 +28,19 @@ class _PokesScreenState extends State<PokesScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.purple,
-        title: Text('Instant Dating(Prototype)'),
+        title: Text('Instant Dating'),
       ),
-      body: Container(),
+      body: SafeArea(
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: ReceivedPokes(
+                accountName: accountName,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
