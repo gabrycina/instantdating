@@ -69,6 +69,7 @@ class DevicesLocation extends StatelessWidget {
                                 InkWell(
                                   borderRadius: BorderRadius.circular(30.0),
                                   onTap: () async {
+                                    await sendPoke(userEmail, user);
                                     Scaffold.of(context).showSnackBar(
                                       SnackBar(content: Text('Poke Sent'),)
                                     );

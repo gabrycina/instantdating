@@ -69,7 +69,7 @@ class _UserScreenState extends State<UserScreen> {
                         height: height / 5,
                         width: width / 3,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100.0),
+                          shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
                               color: Color.fromARGB(60, 0, 0, 0),
