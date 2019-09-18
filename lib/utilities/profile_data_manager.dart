@@ -31,17 +31,20 @@ class ProfileDataManager {
           'accountName': loggedUser.email,
           'position': GeoPoint(0, 0),
           'token': await NotificationHandler().getToken(),
+          'profileImage': loggedUser.photoUrl,
         });
 
         // Write data to local
         await prefs.setString('accountName', loggedUser.email);
         await prefs.setString('position', GeoPoint(0, 0).toString());
         await prefs.setString('token', await NotificationHandler().getToken());
+        await prefs.setString('profileImage', loggedUser.photoUrl);
       } else {
         // Write data to local
         await prefs.setString('accountName', documents[0]['accountName']);
         await prefs.setString('position', documents[0]['position'].toString());
         await prefs.setString('token', await documents[0]['token']);
+        await prefs.setString('profileImage', documents[0]['profileImage']);
       }
       Fluttertoast.showToast(msg: "Sign in Succeded");
     } else {

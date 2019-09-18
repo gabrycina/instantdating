@@ -30,22 +30,61 @@ class _UserScreenState extends State<UserScreen> {
                 height: height / 3.7,
                 color: Colors.purple,
               ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: <Widget>[
+              //     Column(
+              //       mainAxisSize: MainAxisSize.min,
+              //       children: <Widget>[
+              //         Container(
+              //           margin: EdgeInsets.only(top: height / 7),
+              //           width: width / 3,
+              //           height: height / 5,
+              //           decoration: BoxDecoration(
+              //             shape: BoxShape.circle,
+              //             image: DecorationImage(
+              //                 image: NetworkImage(loggedUser.photoUrl),
+              //                 fit: BoxFit.cover),
+              //           ),
+              //         ),
+              //         Text(
+              //           loggedUser.displayName,
+              //           style: TextStyle(
+              //             fontSize: width / 20,
+              //           ),
+              //         ),
+              //       ],
+              //     ),
+              //   ],
+              // ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Column(
-                    mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       Container(
-                        margin: EdgeInsets.only(top: height / 7),
-                        width: width / 3,
-                        height: height / 5,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                              image: NetworkImage(loggedUser.photoUrl),
-                              fit: BoxFit.cover),
+                        margin: EdgeInsets.only(
+                          top: height / 7,
                         ),
+                        height: height / 5,
+                        width: width / 3,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100.0),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color.fromARGB(60, 0, 0, 0),
+                              blurRadius: 5.0,
+                              offset: Offset(5.0, 5.0),
+                            )
+                          ],
+                          image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: NetworkImage(loggedUser.photoUrl),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: height / 60,
                       ),
                       Text(
                         loggedUser.displayName,
@@ -58,7 +97,11 @@ class _UserScreenState extends State<UserScreen> {
                 ],
               ),
               Padding(
-                padding: EdgeInsets.only(top: height / 2.1, left: width / 20, right: width / 20,),
+                padding: EdgeInsets.only(
+                  top: height / 2.1,
+                  left: width / 20,
+                  right: width / 20,
+                ),
                 child: Column(
                   children: <Widget>[
                     Text(

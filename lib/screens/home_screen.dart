@@ -29,20 +29,20 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {    
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.purple,
-        title: Text('Instant Dating(Prototype)'),
+        title: Text('Instant Dating'),
         actions: <Widget>[
           Padding(
             padding: EdgeInsets.only(right: 8.0),
             child: IconButton(
-                icon: Icon(Icons.exit_to_app),
-                onPressed: () {
+              icon: Icon(Icons.exit_to_app),
+              onPressed: () async {
 //                  switch (widget.type) {
 //                    case 'google':
-                  UserAccount().googleLogout(context);
+                await UserAccount().googleLogout(context);
 //                      break;
 //                    case 'facebook':
 //                      UserAccount().facebookLogout(context);
@@ -50,25 +50,8 @@ class _HomeScreenState extends State<HomeScreen> {
 //                    case 'email':
 //                      UserAccount().logout(context);
 //                  }
-                }),
-          ),
-          GestureDetector(
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => UserScreen(user: widget.user),
-              ),
+              },
             ),
-            child: Icon(Icons.supervised_user_circle),
-          ),
-          GestureDetector(
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => PokesScreen(user: widget.user),
-              ),
-            ),
-            child: Icon(Icons.sync),
           ),
         ],
       ),

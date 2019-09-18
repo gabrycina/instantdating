@@ -31,14 +31,34 @@ class ReceivedPokes extends StatelessWidget {
           var senderEmail = receivedPoke.data['sender'];
           var senderLatitude = receivedPoke.data['position'].latitude;
           var senderLongitude = receivedPoke.data['position'].longitude;
+          var senderImage = receivedPoke.data['image'];
 
           usersDocsDecoded.add(
             ListTile(
-              leading: Icon(Icons.notifications_active),
-              title: Text(
-                  '$senderEmail, Lat: $senderLatitude , Long: $senderLongitude'),
+              leading: senderImage == null
+                  ? Icon(Icons.notifications_active)
+                  : CircleAvatar(
+                      backgroundImage: NetworkImage(senderImage),
+                    ),
+              title: Text('$senderEmail'),
+              subtitle: Text('Lat: $senderLatitude , Long: $senderLongitude'),
               trailing: GestureDetector(
-                child: Icon(Icons.check),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    InkWell(
+                      onTap: () {},
+                      child: Icon(Icons.check),
+                    ),
+                    SizedBox(
+                      width: 15,
+                    ),
+                    InkWell(
+                      onTap: () {},
+                      child: Icon(Icons.close),
+                    ),
+                  ],
+                ),
                 //TODO: implement poke reject/acccept function
                 onTap: () {},
               ),
