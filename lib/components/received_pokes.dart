@@ -28,42 +28,52 @@ class ReceivedPokes extends StatelessWidget {
         List<ListTile> usersDocsDecoded = [];
 
         for (var receivedPoke in receivedPokes) {
-          var senderEmail = receivedPoke.data['sender'];
-          var senderLatitude = receivedPoke.data['position'].latitude;
-          var senderLongitude = receivedPoke.data['position'].longitude;
-          var senderImage = receivedPoke.data['image'];
 
-          usersDocsDecoded.add(
-            ListTile(
-              leading: senderImage == null
-                  ? Icon(Icons.notifications_active)
-                  : CircleAvatar(
-                      backgroundImage: NetworkImage(senderImage),
-                    ),
-              title: Text('$senderEmail'),
-              subtitle: Text('Lat: $senderLatitude , Long: $senderLongitude'),
-              trailing: GestureDetector(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    InkWell(
-                      onTap: () {},
-                      child: Icon(Icons.check),
-                    ),
-                    SizedBox(
-                      width: 15,
-                    ),
-                    InkWell(
-                      onTap: () {},
-                      child: Icon(Icons.close),
-                    ),
-                  ],
+          var now = DateTime.now();
+          Timestamp pokeSentAtTimestamp = receivedPoke.data['time'];
+
+          //Converts Timestamp to DateTime and then calculates the difference
+          DateTime pokeSentAtDateTime = DateTime.fromMillisecondsSinceEpoch(pokeSentAtTimestamp.millisecondsSinceEpoch);
+          var diff = now.difference(pokeSentAtDateTime);
+          print(diff.inMinutes);
+          if (diff.inMinutes <= 15) {
+            var senderEmail = receivedPoke.data['sender'];
+            var senderLatitude = receivedPoke.data['position'].latitude;
+            var senderLongitude = receivedPoke.data['position'].longitude;
+            var senderImage = receivedPoke.data['image'];
+
+            usersDocsDecoded.add(
+              ListTile(
+                leading: senderImage == null
+                    ? Icon(Icons.notifications_active)
+                    : CircleAvatar(
+                        backgroundImage: NetworkImage(senderImage),
+                      ),
+                title: Text('$senderEmail'),
+                subtitle: Text('Lat: $senderLatitude , Long: $senderLongitude'),
+                trailing: GestureDetector(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      InkWell(
+                        onTap: () {},
+                        child: Icon(Icons.check),
+                      ),
+                      SizedBox(
+                        width: 15,
+                      ),
+                      InkWell(
+                        onTap: () {},
+                        child: Icon(Icons.close),
+                      ),
+                    ],
+                  ),
+                  //TODO: implement poke reject/acccept function
+                  onTap: () {},
                 ),
-                //TODO: implement poke reject/acccept function
-                onTap: () {},
               ),
-            ),
-          );
+            );
+          }
         }
 
         return ListView(

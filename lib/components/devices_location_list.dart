@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:instant_dating/utilities/profile_data_manager.dart';
+
 
 final _firestore = Firestore.instance;
 
@@ -14,6 +15,8 @@ class DevicesLocation extends StatelessWidget {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+    ProfileDataManager profileDataManager = ProfileDataManager();
+
     return StreamBuilder<QuerySnapshot>(
       stream: _firestore.collection('devicesLocation').snapshots(),
       builder: (context, snapshot) {
@@ -69,7 +72,7 @@ class DevicesLocation extends StatelessWidget {
                                 InkWell(
                                   borderRadius: BorderRadius.circular(30.0),
                                   onTap: () async {
-                                    await sendPoke(userEmail, user);
+                                    await profileDataManager.sendPoke(userEmail, user);
                                     Scaffold.of(context).showSnackBar(
                                       SnackBar(content: Text('Poke Sent'),)
                                     );
@@ -93,6 +96,7 @@ class DevicesLocation extends StatelessWidget {
                                     fontWeight: FontWeight.w500),
                               ),
                               Text(
+                                //TODO: change with position
                                 'Meno di 1km di distanza',
                                 style: TextStyle(
                                   fontSize: width / 33,
@@ -161,38 +165,6 @@ class DevicesLocation extends StatelessWidget {
                   ),
                 ),
               ),
-              // ListTile(
-              //   leading: userImage == null
-              //       ? Icon(Icons.phone_iphone)
-              //       : CircleAvatar(
-              //           backgroundImage: NetworkImage(userImage),
-              //         ),
-              //   title: Text(
-              //     '$userEmail',
-              //     overflow: TextOverflow.ellipsis,
-              //   ),
-              //   subtitle: Text(
-              //     'Lat: $userLatitude , Long: $userLongitude',
-              //     overflow: TextOverflow.ellipsis,
-              //   ),
-              //   trailing: InkWell(
-              //     onTap: () async {
-              //       await sendPoke(userEmail, user);
-              //       showDialog(
-              //         context: context,
-              //         builder: (context) => AlertDialog(
-              //           title: Text('Poke Sended'),
-              //           content: Text(
-              //             'Adesso non ti resta altro che aspettare e vedere che succede!',
-              //           ),
-              //         ),
-              //       );
-              //       Future.delayed(
-              //           Duration(seconds: 3), () => Navigator.pop(context));
-              //     },
-              //     child: Icon(Icons.add_circle_outline),
-              //   ),
-              // ),
             );
           }
         }
@@ -203,26 +175,5 @@ class DevicesLocation extends StatelessWidget {
         );
       },
     );
-  }
-
-  Future<void> sendPoke(String receiverEmail, dynamic user) async {
-    var loggedUser = user;
-    DocumentSnapshot docRef = await _firestore
-        .collection('devicesLocation')
-        .document(loggedUser.email)
-        .get();
-    if (loggedUser != null) {
-      _firestore
-          .collection('devicesLocation')
-          .document(receiverEmail)
-          .collection('pokes')
-          .add({
-        'sender': loggedUser.email,
-        'position': docRef.data['position'],
-        'image': loggedUser.photoUrl,
-      });
-    } else {
-      Fluttertoast.showToast(msg: 'You Need to Login First');
-    }
   }
 }

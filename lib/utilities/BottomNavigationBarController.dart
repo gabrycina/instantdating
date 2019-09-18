@@ -4,6 +4,7 @@ import 'package:instant_dating/utilities/notification_handler.dart';
 import 'package:instant_dating/screens/home_screen.dart';
 import 'package:instant_dating/screens/user_screen.dart';
 import 'package:instant_dating/screens/pokes_screen.dart';
+import 'package:instant_dating/utilities/user_account.dart';
 
 class BottomNavigationBarController extends StatefulWidget {
   BottomNavigationBarController({this.loggedUser});
@@ -80,6 +81,30 @@ class _BottomNavigationBarControllerState extends State<BottomNavigationBarContr
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.purple,
+        title: Text('Instant Dating'),
+        actions: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(right: 8.0),
+            child: IconButton(
+              icon: Icon(Icons.exit_to_app),
+              onPressed: () async {
+//                  switch (widget.type) {
+//                    case 'google':
+                await UserAccount().googleLogout(context);
+//                      break;
+//                    case 'facebook':
+//                      UserAccount().facebookLogout(context);
+//                      break;
+//                    case 'email':
+//                      UserAccount().logout(context);
+//                  }
+              },
+            ),
+          ),
+        ],
+      ),
       bottomNavigationBar: _bottomNavigationBar(_selectedIndex),
       body: PageStorage(
         child: pages[_selectedIndex],

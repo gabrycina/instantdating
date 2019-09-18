@@ -18,10 +18,6 @@ class _UserScreenState extends State<UserScreen> {
     final double height = MediaQuery.of(context).size.height;
     final double width = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.purple,
-        title: Text('Instant Dating(Prototype)'),
-      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Stack(

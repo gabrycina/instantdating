@@ -26,10 +26,6 @@ class _PokesScreenState extends State<PokesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.purple,
-        title: Text('Instant Dating'),
-      ),
       body: SafeArea(
         child: Column(
           children: <Widget>[

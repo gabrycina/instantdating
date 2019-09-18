@@ -1,14 +1,11 @@
-//import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:instant_dating/utilities/notification_handler.dart';
 import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:async';
-//import 'package:firebase_auth/firebase_auth.dart';
 
 class ProfileDataManager {
-//  final _auth = FirebaseAuth.instance;
   final _firestore = Firestore.instance;
   SharedPreferences prefs;
 
@@ -33,6 +30,11 @@ class ProfileDataManager {
           'token': await NotificationHandler().getToken(),
           'profileImage': loggedUser.photoUrl,
         });
+
+        _firestore
+            .collection('devicesLocation')
+            .document(loggedUser.email)
+            .collection('pokes');
 
         // Write data to local
         await prefs.setString('accountName', loggedUser.email);
@@ -80,23 +82,25 @@ class ProfileDataManager {
     }
   }
 
-//  Future<dynamic> getCurrentUser(dynamic user) async {
-//    bool isSocial = type != "email";
-//    var loggedUser;
-//    try {
-//      //
-//      if (isSocial) {
-//        loggedUser = user;
-//      } else {
-//        var user = await _auth.currentUser();
-//        if (user != null) {
-//          loggedUser = user;
-//        }
-//      }
-//    } catch (e) {
-//      print(e);
-//    }
-//    return loggedUser;
-//  }
-
+  Future<void> sendPoke(String receiverEmail, dynamic user) async {
+    var loggedUser = user;
+    DocumentSnapshot docRef = await _firestore
+        .collection('devicesLocation')
+        .document(loggedUser.email)
+        .get();
+    if (loggedUser != null) {
+      _firestore
+          .collection('devicesLocation')
+          .document(receiverEmail)
+          .collection('pokes')
+          .add({
+        'sender': loggedUser.email,
+        'position': docRef.data['position'],
+        'image': loggedUser.photoUrl,
+        'time': DateTime.now()
+      });
+    } else {
+      Fluttertoast.showToast(msg: 'You Need to Login First');
+    }
+  }
 }
