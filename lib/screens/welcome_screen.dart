@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
-import 'package:instant_dating/utilities/user_account.dart';
+import 'package:instant_dating/services/user_account.dart';
 //import 'package:instant_dating/components/action_button.dart';
 //import 'login_screen.dart';
 //import 'registration_screen.dart';

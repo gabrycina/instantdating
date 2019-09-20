@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:instant_dating/utilities/profile_data_manager.dart';
-
+import 'package:instant_dating/components/gradient_opacity.dart';
+import 'package:instant_dating/screens/VisitedUserScreen/visited_user_screen.dart';
+import 'package:instant_dating/services/profile_data_manager.dart';
+import 'package:instant_dating/services/size_config.dart';
 
 final _firestore = Firestore.instance;
 
@@ -13,8 +15,7 @@ class DevicesLocation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
+    SizeConfig().init(context);
     ProfileDataManager profileDataManager = ProfileDataManager();
 
     return StreamBuilder<QuerySnapshot>(
@@ -29,7 +30,6 @@ class DevicesLocation extends StatelessWidget {
 
         final usersDocs = snapshot.data.documents;
         List<Padding> usersDocsDecoded = [];
-
         for (var userInfo in usersDocs) {
           if (userInfo.data['accountName'] != accountName) {
             var userEmail = userInfo.data['accountName'];
@@ -39,139 +39,148 @@ class DevicesLocation extends StatelessWidget {
 
             usersDocsDecoded.add(
               Padding(
-                padding: EdgeInsets.symmetric(vertical: height * 0.009, horizontal: width * 0.009),
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                  ),
-                  elevation: 6,
-                  child: InkWell(
-                    onTap: () {
-                      //TODO: show user profile
-                      print('pressed1');
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: width / 50),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          
-                          Padding(
-                            padding: EdgeInsets.fromLTRB(
-                                width / 40, 10, width / 40, 0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                userImage == null
-                                    ? Icon(Icons.notifications_active)
-                                    : CircleAvatar(
-                                        backgroundImage: NetworkImage(userImage),
-                                      ),
-                                InkWell(
-                                  borderRadius: BorderRadius.circular(30.0),
-                                  onTap: () async {
-                                    await profileDataManager.sendPoke(userEmail, user);
-                                    Scaffold.of(context).showSnackBar(
-                                      SnackBar(content: Text('Poke Sent'),)
-                                    );
-                                  },
-                                  child: Icon(Icons.add_circle_outline),
-                                ),
-                              ],
+                padding: EdgeInsets.only(bottom: 1.5),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: <Widget>[
+                    //image
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: SizeConfig.horizontal * 1, vertical: 5),
+                      child: Hero(
+                        tag: userEmail,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            image: DecorationImage(
+                              image: NetworkImage(userImage),
+                              fit: BoxFit.cover,
                             ),
                           ),
-
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-
-                              //TODO: change with username by google
-                              Text(
-                                userEmail,
-                                style: TextStyle(
-                                    fontSize: width / 25,
-                                    letterSpacing: 1,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                              Text(
-                                //TODO: change with position
-                                'Meno di 1km di distanza',
-                                style: TextStyle(
-                                  fontSize: width / 33,
-                                  color: Colors.black54,
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          //show other image than the first one
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: userImage == null
-                                      ? Icon(Icons.notifications_active)
-                                      : CircleAvatar(
-                                          backgroundImage:
-                                              NetworkImage(userImage),
-                                        ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: userImage == null
-                                      ? Icon(Icons.notifications_active)
-                                      : CircleAvatar(
-                                          backgroundImage:
-                                              NetworkImage(userImage),
-                                        ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: userImage == null
-                                      ? Icon(Icons.notifications_active)
-                                      : CircleAvatar(
-                                          backgroundImage:
-                                              NetworkImage(userImage),
-                                        ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: userImage == null
-                                      ? Icon(Icons.notifications_active)
-                                      : CircleAvatar(
-                                          backgroundImage:
-                                              NetworkImage(userImage),
-                                        ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: userImage == null
-                                      ? Icon(Icons.notifications_active)
-                                      : CircleAvatar(
-                                          backgroundImage:
-                                              NetworkImage(userImage),
-                                        ),
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
+                        ),
                       ),
                     ),
-                  ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: SizeConfig.horizontal * 1, vertical: 5),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (cxt) => VisitedUser(
+                                      userImage: userImage,
+                                      //change with name and surname
+                                      userEmail: userEmail,
+                                    )),
+                          );
+                        },
+                        child: GradientOpacity(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: SizeConfig.horizontal * 2,
+                                vertical: 5),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  'Christian, 18',
+                                  style: TextStyle(
+                                    fontSize: SizeConfig.horizontal * 4,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500,
+                                    letterSpacing: 1,
+                                  ),
+                                ),
+                                // Text(
+                                //   'Meno 1km di distanza',
+                                //   style: TextStyle(
+                                //     fontSize: SizeConfig.horizontal * 3,
+                                //     color: Color(0xAAFFFFFF),
+                                //     fontWeight: FontWeight.w500,
+                                //     letterSpacing: 1,
+                                //   ),
+                                // ),
+
+                                Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Material(
+                                    color: Colors.transparent,
+                                    child: InkWell(
+                                      onTap: () async {
+                                        await profileDataManager.sendPoke(
+                                            userEmail, user);
+                                        Scaffold.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: Text('Poke inviato'),
+                                          ),
+                                        );
+                                      },
+                                      child: Container(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                  bottom: 8.0, top: 3.0),
+                                              child: Text(
+                                                'INVIA POKE',
+                                                style: TextStyle(
+                                                  // fontSize: SizeConfig.horizontal * 3,
+                                                  color: Color(0xFFFFFFFF),
+                                                  fontWeight: FontWeight.w500,
+                                                  letterSpacing: 3,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                // SizedBox(height: 10,),
+                                // Text(
+                                //   'Lat: $userLatitude',
+                                //   style: TextStyle(
+                                //     color: Colors.white,
+                                //     fontWeight: FontWeight.w500,
+                                //     letterSpacing: 1,
+                                //   ),
+                                // ),
+                                // Text(
+                                //   'Lon: $userLongitude',
+                                //   style: TextStyle(
+                                //     color: Colors.white,
+                                //     fontWeight: FontWeight.w500,
+                                //     letterSpacing: 1,
+                                //   ),
+                                // ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             );
           }
         }
 
-        return GridView.count(
-          crossAxisCount: 2,
-          children: usersDocsDecoded,
+        return Padding(
+          padding: EdgeInsets.all(8.0),
+          child: GridView.count(
+            crossAxisCount: 2,
+            crossAxisSpacing: 2,
+            childAspectRatio: 0.84,
+            physics: ScrollPhysics(), // to disable GridView's scrolling
+            shrinkWrap: true,
+            children: usersDocsDecoded,
+          ),
         );
       },
     );

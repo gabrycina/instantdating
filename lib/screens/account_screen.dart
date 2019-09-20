@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:instant_dating/services/user_account.dart';
 
-class UserScreen extends StatefulWidget {
-  UserScreen({this.user, this.key});
+class AccountScreen extends StatefulWidget {
+  AccountScreen({this.user, this.key});
 
   static final id = 'user_screen';
   final Key key;
   final user;
 
   @override
-  _UserScreenState createState() => _UserScreenState();
+  _AccountScreenState createState() => _AccountScreenState();
 }
 
-class _UserScreenState extends State<UserScreen> {
+class _AccountScreenState extends State<AccountScreen> {
   @override
   Widget build(BuildContext context) {
     var loggedUser = widget.user;
@@ -25,6 +26,10 @@ class _UserScreenState extends State<UserScreen> {
               Container(
                 height: height / 3.7,
                 color: Colors.purple,
+              ),
+              GestureDetector(
+                onTap: () async => await UserAccount().googleLogout(context),
+                child: Icon(Icons.close),
               ),
               // Row(
               //   mainAxisAlignment: MainAxisAlignment.center,

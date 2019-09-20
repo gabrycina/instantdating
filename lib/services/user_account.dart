@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:instant_dating/screens/welcome_screen.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
-import 'package:instant_dating/utilities/BottomNavigationBarController.dart';
+import 'package:instant_dating/services/BottomNavigationBarController.dart';
 
 //import 'package:firebase_auth/firebase_auth.dart';
 //import 'package:http/http.dart' as http;
@@ -90,10 +90,8 @@ class UserAccount {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => BottomNavigationBarController(
-              loggedUser: googleUser
-            )
-          ),
+              builder: (context) =>
+                  BottomNavigationBarController(loggedUser: googleUser)),
         );
     } catch (e) {
       print(e);
