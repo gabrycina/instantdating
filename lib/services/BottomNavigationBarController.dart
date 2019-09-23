@@ -3,7 +3,7 @@ import 'package:instant_dating/screens/HomeScreen/home_screen.dart';
 import 'package:instant_dating/services/profile_data_manager.dart';
 import 'package:instant_dating/services/notification_handler.dart';
 import 'package:instant_dating/screens/account_screen.dart';
-import 'package:instant_dating/screens/pokes_screen.dart';
+import 'package:instant_dating/screens/PokesScreen/pokes_screen.dart';
 
 class BottomNavigationBarController extends StatefulWidget {
   BottomNavigationBarController({this.loggedUser});
@@ -80,11 +80,13 @@ class _BottomNavigationBarControllerState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: _bottomNavigationBar(_selectedIndex),
-      body: PageStorage(
-        child: pages[_selectedIndex],
-        bucket: bucket,
+    return SafeArea(
+      child: Scaffold(
+        bottomNavigationBar: _bottomNavigationBar(_selectedIndex),
+        body: PageStorage(
+          child: pages[_selectedIndex],
+          bucket: bucket,
+        ),
       ),
     );
   }

@@ -8,7 +8,21 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(fontFamily: 'Lato'),
+      theme: ThemeData(
+        backgroundColor: Color(0xFFEEEEEE),
+        fontFamily: 'Lato',
+        textTheme: TextTheme(
+          headline: TextStyle(
+            color: Color(0xFF424242),
+          ),
+          title: TextStyle(
+            color: Color(0xFF424242),
+          ),
+          body1: TextStyle(
+            color: Color(0xFF424242),
+          ),
+        ),
+      ),
       home: WelcomeScreen(),
     );
   }

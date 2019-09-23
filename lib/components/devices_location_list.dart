@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:instant_dating/components/gradient_opacity.dart';
@@ -52,10 +53,20 @@ class DevicesLocation extends StatelessWidget {
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            image: DecorationImage(
-                              image: NetworkImage(userImage),
-                              fit: BoxFit.cover,
-                            ),
+                          ),
+                          child: CachedNetworkImage(
+                            imageUrl: userImage,
+                            imageBuilder: (context, imageProvider) {
+                              return Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              );
+                            },
                           ),
                         ),
                       ),
@@ -68,100 +79,74 @@ class DevicesLocation extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (cxt) => VisitedUser(
-                                      userImage: userImage,
-                                      //change with name and surname
-                                      userEmail: userEmail,
-                                    )),
+                              builder: (cxt) => VisitedUser(
+                                userImage: userImage,
+                                //change with name and surname
+                                userEmail: userEmail,
+                              ),
+                            ),
                           );
                         },
-                        child: GradientOpacity(
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: SizeConfig.horizontal * 2,
-                                vertical: 5),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  'Christian, 18',
-                                  style: TextStyle(
-                                    fontSize: SizeConfig.horizontal * 4,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w500,
-                                    letterSpacing: 1,
-                                  ),
-                                ),
-                                // Text(
-                                //   'Meno 1km di distanza',
-                                //   style: TextStyle(
-                                //     fontSize: SizeConfig.horizontal * 3,
-                                //     color: Color(0xAAFFFFFF),
-                                //     fontWeight: FontWeight.w500,
-                                //     letterSpacing: 1,
-                                //   ),
-                                // ),
-
-                                Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Material(
-                                    color: Colors.transparent,
-                                    child: InkWell(
-                                      onTap: () async {
-                                        await profileDataManager.sendPoke(
-                                            userEmail, user);
-                                        Scaffold.of(context).showSnackBar(
-                                          SnackBar(
-                                            content: Text('Poke inviato'),
-                                          ),
-                                        );
-                                      },
-                                      child: Container(
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Padding(
-                                              padding: EdgeInsets.only(
-                                                  bottom: 8.0, top: 3.0),
-                                              child: Text(
-                                                'INVIA POKE',
-                                                style: TextStyle(
-                                                  // fontSize: SizeConfig.horizontal * 3,
-                                                  color: Color(0xFFFFFFFF),
-                                                  fontWeight: FontWeight.w500,
-                                                  letterSpacing: 3,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                )
-                                // SizedBox(height: 10,),
-                                // Text(
-                                //   'Lat: $userLatitude',
-                                //   style: TextStyle(
-                                //     color: Colors.white,
-                                //     fontWeight: FontWeight.w500,
-                                //     letterSpacing: 1,
-                                //   ),
-                                // ),
-                                // Text(
-                                //   'Lon: $userLongitude',
-                                //   style: TextStyle(
-                                //     color: Colors.white,
-                                //     fontWeight: FontWeight.w500,
-                                //     letterSpacing: 1,
-                                //   ),
-                                // ),
-                              ],
+                        child: Hero(
+                          tag: 'opacity$userImage',
+                          child: GradientOpacity(),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: SizeConfig.horizontal * 2, vertical: 5),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            'Christian, 18',
+                            style: TextStyle(
+                              fontSize: SizeConfig.horizontal * 4,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: 1,
                             ),
                           ),
-                        ),
+                          Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                onTap: () async {
+                                  await profileDataManager.sendPoke(
+                                      userEmail, user);
+                                  Scaffold.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('Poke inviato'),
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            bottom: 8.0, top: 3.0),
+                                        child: Text(
+                                          'INVIA POKE',
+                                          style: TextStyle(
+                                            // fontSize: SizeConfig.horizontal * 3,
+                                            color: Color(0xFFFFFFFF),
+                                            fontWeight: FontWeight.w500,
+                                            letterSpacing: 3,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],

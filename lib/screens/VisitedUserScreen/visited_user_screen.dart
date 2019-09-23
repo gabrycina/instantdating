@@ -1,169 +1,133 @@
 import 'package:flutter/material.dart';
-import 'package:instant_dating/components/gradient_opacity.dart';
+import 'package:instant_dating/screens/VisitedUserScreen/components/panel.dart';
+import 'package:instant_dating/services/schedule.dart';
 import 'package:instant_dating/services/size_config.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:provider/provider.dart';
 
-class VisitedUser extends StatefulWidget {
+import 'components/panel_title.dart';
+import 'components/user_image.dart';
+
+class VisitedUser extends StatelessWidget {
   VisitedUser({this.userImage, this.userEmail});
 
   final String userImage;
   final String userEmail;
 
   @override
-  _VisitedUserState createState() => _VisitedUserState();
-}
-
-class _VisitedUserState extends State<VisitedUser>
-    with SingleTickerProviderStateMixin {
-  AnimationController _controller;
-  Animation<double> _heightFactorAnimation;
-  final double collapsedHeightFactor = 0.83;
-  final double expandedHeightFactor = 0.55;
-  double minusVal = 0.0;
-  bool isCollapsed = true;
-
-  @override
-  void initState() {
-    _controller = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 350),
-    );
-    _heightFactorAnimation = Tween<double>(
-      begin: collapsedHeightFactor,
-      end: expandedHeightFactor,
-    ).animate(_controller);
-
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    var cycle = 0;
-    return SafeArea(
-      child: Scaffold(
-        body: AnimatedBuilder(
-          animation: _controller,
-          builder: (context, _) {
-            return Stack(
-              fit: StackFit.expand,
-              children: <Widget>[
-                FractionallySizedBox(
-                  alignment: Alignment.topCenter,
-                  heightFactor: _heightFactorAnimation.value - (minusVal / 4),
-                  child: Stack(
-                    children: <Widget>[
-                      Hero(
-                        tag: widget.userEmail,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: NetworkImage(widget.userImage),
-                              fit: BoxFit.cover,
-                            ),
+    return ChangeNotifierProvider(
+      builder: (context) => Schedule(),
+      child: SafeArea(
+        child: Scaffold(
+          body: Stack(
+            fit: StackFit.expand,
+            children: <Widget>[
+              UserImage(
+                heroTag: userEmail,
+                image: userImage,
+              ),
+              Panel(
+                screenSize: MediaQuery.of(context).size.height,
+                panel: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          vertical: SizeConfig.vertical * 3),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Color(0xFFBDBDBD),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        height: 4,
+                        width: SizeConfig.horizontal * 20,
+                      ),
+                    ),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 18.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                'Christian Arduino, 19',
+                                style: TextStyle(
+                                  fontSize: SizeConfig.horizontal * 6,
+                                ),
+                              ),
+                              PanelTitle(title: 'Interessi'),
+                              Padding(
+                                padding: EdgeInsets.only(top: 8.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: EdgeInsets.only(right: 8.0),
+                                      child: Icon(
+                                        Icons.photo_camera,
+                                        size: SizeConfig.horizontal * 7,
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(right: 8.0),
+                                      child: Icon(
+                                        Icons.computer,
+                                        size: SizeConfig.horizontal * 7,
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(right: 8.0),
+                                      child: Icon(
+                                        Icons.directions_car,
+                                        size: SizeConfig.horizontal * 7,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              PanelTitle(title: 'Bio'),
+                              Padding(
+                                padding: EdgeInsets.symmetric(vertical: 8.0),
+                                child: Text(
+                                  'Duis feugiat commodo condimentum. Praesent arcu odio, molestie sit amet euismod nec, eleifend vel ligula. Vivamus accumsan ligula in erat porta, a suscipit orci cursus. Etiam eget egestas felis. Quisque porta tortor et odio condimentum, in vestibulum lectus sagittis. Nulla quis lorem sed ex tincidunt mollis non a lectus. Vivamus convallis, orci id semper dignissim, purus quam tempor velit, a volutpat tortor ex nec lorem. Phasellus at luctus est. Duis at tellus finibus, vulputate odio a, convallis velit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.',
+                                  style: TextStyle(
+                                    fontSize: SizeConfig.horizontal * 3.5,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                      GradientOpacity(),
-                      Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.arrow_back_ios,
-                            color: Colors.white,
-                            size: SizeConfig.horizontal * 10,
-                          ),
-                          onPressed: () => Navigator.pop(context),
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                SlidingUpPanel(
-                  borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(20.0),
-                  ),
-                  onPanelSlide: (val) {
-                    if (cycle == 0) {
-                      cycle++;
-                    } else {
-                      setState(() {
-                        minusVal = val;
-                      });
-                    }
-                  },
-                  minHeight: SizeConfig.vertical * 25,
-                  maxHeight: SizeConfig.vertical * 45,
-                  panel: Padding(
-                    padding: EdgeInsets.only(left: 10.0, top: 12.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          '${widget.userEmail}, 19',
-                          style: TextStyle(
-                            fontSize: SizeConfig.horizontal * 5,
-                          ),
-                        ),
-                      ],
+              ),
+              Positioned(
+                top: 0,
+                left: 0,
+                child: Hero(
+                  tag: 'arrow_back',
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.arrow_back_ios,
+                        color: Colors.white,
+                        size: SizeConfig.horizontal * 10,
+                      ),
+                      onPressed: () => Navigator.pop(context),
                     ),
                   ),
                 ),
-              ],
-            );
-          },
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
-
-//FractionallySizedBox(
-//alignment: Alignment.bottomCenter,
-//heightFactor: 1.05 - _heightFactorAnimation.value,
-//child: Container(
-//decoration: BoxDecoration(
-//color: Colors.white,
-//borderRadius: BorderRadius.only(
-//topLeft: Radius.circular(40.0),
-//topRight: Radius.circular(40.0),
-//),
-//),
-//child: Column(
-//crossAxisAlignment: CrossAxisAlignment.start,
-//children: <Widget>[
-//SizedBox(
-//height: SizeConfig.vertical * 3,
-//),
-//Padding(
-//padding: EdgeInsets.only(left: 16.0),
-//child: RichText(
-//text: TextSpan(
-//text: 'Christian Arduino',
-//style: TextStyle(
-//fontSize: SizeConfig.horizontal * 5,
-//fontWeight: FontWeight.bold,
-//color: Colors.black,
-//),
-//children: [
-//TextSpan(
-//text: ', 18',
-//style: TextStyle(
-//fontSize: SizeConfig.horizontal * 5,
-//fontWeight: FontWeight.w400,
-//color: Colors.black,
-//),
-//)
-//]),
-//),
-//),
-//],
-//),
-//),
-//),
