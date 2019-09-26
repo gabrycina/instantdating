@@ -145,18 +145,25 @@ class ReceivedPokes extends StatelessWidget {
           }
         }
 
-        return Padding(
-          padding: EdgeInsets.all(8.0),
-          child: GridView.count(
-            crossAxisCount: 2,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-            childAspectRatio: 0.84,
-            physics: ScrollPhysics(), // to disable GridView's scrolling
-            shrinkWrap: true,
-            children: usersDocsDecoded,
-          ),
-        );
+        if(usersDocsDecoded.length > 0){
+          return Padding(
+            padding: EdgeInsets.all(8.0),
+            child: GridView.count(
+              crossAxisCount: 2,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+              childAspectRatio: 0.84,
+              physics: ScrollPhysics(), // to disable GridView's scrolling
+              shrinkWrap: true,
+              children: usersDocsDecoded,
+            ),
+          );
+        } else{
+          return Center(
+            child: Text('No Pokes received in the last 15 minutes'),
+          );
+        }
+
       },
     );
   }

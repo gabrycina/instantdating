@@ -62,18 +62,48 @@ class _BottomNavigationBarControllerState
   Widget _bottomNavigationBar(int selectedIndex) => BottomNavigationBar(
         onTap: (int index) => setState(() => _selectedIndex = index),
         currentIndex: selectedIndex,
-        items: const <BottomNavigationBarItem>[
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.notifications_active),
-            title: Text('Pokes'),
+            icon: Icon(
+              Icons.notifications_active,
+              color:
+                  _selectedIndex == 0 ? Color(0xFFFF655B) : Color(0xFF686868),
+            ),
+            title: Text(
+              'Pokes',
+              style: TextStyle(
+                color:
+                    _selectedIndex == 0 ? Color(0xFFFF655B) : Color(0xFF686868),
+              ),
+            ),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            title: Text('Home'),
+            icon: Icon(
+              Icons.home,
+              color:
+                  _selectedIndex == 1 ? Color(0xFFFF655B) : Color(0xFF686868),
+            ),
+            title: Text(
+              'Home',
+              style: TextStyle(
+                color:
+                    _selectedIndex == 1 ? Color(0xFFFF655B) : Color(0xFF686868),
+              ),
+            ),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            title: Text('Account'),
+            icon: Icon(
+              Icons.account_circle,
+              color:
+                  _selectedIndex == 2 ? Color(0xFFFF655B) : Color(0xFF686868),
+            ),
+            title: Text(
+              'Account',
+              style: TextStyle(
+                color:
+                    _selectedIndex == 2 ? Color(0xFFFF655B) : Color(0xFF686868),
+              ),
+            ),
           ),
         ],
       );

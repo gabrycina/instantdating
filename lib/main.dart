@@ -10,6 +10,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         backgroundColor: Color(0xFFEEEEEE),
+        accentColor: Color(0xFFFF655B),
+        disabledColor: Color(0xFFFF655B),
         fontFamily: 'Lato',
         textTheme: TextTheme(
           headline: TextStyle(
