@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_tindercard/flutter_tindercard.dart';
+import 'package:instant_dating/components/gradient_opacity.dart';
 import 'package:instant_dating/screens/PokesScreen/components/pokes_button.dart';
 import 'package:instant_dating/services/size_config.dart';
 
@@ -9,18 +11,24 @@ import 'package:instant_dating/screens/VisitedUserScreen/visited_user_screen.dar
 
 final _firestore = Firestore.instance;
 
-class ReceivedPokes extends StatelessWidget {
+class ReceivedPokes extends StatefulWidget {
   ReceivedPokes({this.accountName});
 
   final String accountName;
 
+  @override
+  _ReceivedPokesState createState() => _ReceivedPokesState();
+}
+
+class _ReceivedPokesState extends State<ReceivedPokes>
+    with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     return StreamBuilder<QuerySnapshot>(
       stream: _firestore
           .collection('devicesLocation')
-          .document(accountName)
+          .document(widget.accountName)
           .collection('pokes')
           .snapshots(),
       builder: (context, snapshot) {
@@ -32,7 +40,7 @@ class ReceivedPokes extends StatelessWidget {
           );
 
         final receivedPokes = snapshot.data.documents;
-        List<Card> usersDocsDecoded = [];
+        List usersDocsDecoded = [];
 
         for (var receivedPoke in receivedPokes) {
           var now = DateTime.now();
@@ -49,122 +57,105 @@ class ReceivedPokes extends StatelessWidget {
             var senderImage = receivedPoke.data['image'];
 
             usersDocsDecoded.add(
-              Card(
-                elevation: 10.0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Column(
-                      children: <Widget>[
-                        CachedNetworkImage(
-                          imageUrl: senderImage,
-                          imageBuilder: (context, imageProvider) {
-                            return Container(
-                              margin: EdgeInsets.only(
-                                  top: SizeConfig.vertical * 4.5),
-                              child: Stack(
-                                children: <Widget>[
-                                  CircleAvatar(
-                                    backgroundImage: NetworkImage(senderImage),
-                                    radius: SizeConfig.horizontal * 8,
-                                  ),
-                                  Positioned(
-                                    bottom: 0,
-                                    right: 0,
-                                    child: Container(
-                                      padding: EdgeInsets.all(4),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        color: Colors.white,
-                                      ),
-                                      child: Icon(
-                                        Icons.computer,
-                                        color: Colors.black,
-                                        size: SizeConfig.horizontal * 3.5,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(top: 8.0),
-                          child: Text(
-                            'Christian Arduino',
-                            style: TextStyle(
-                              fontSize: SizeConfig.horizontal * 4.3,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(top: 4),
-                          child: Text(
-                            'Inviato 13min fa',
-                            style: TextStyle(
-                              fontSize: SizeConfig.horizontal * 3,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        Expanded(
-                          child: PokeButton(
-                            backgroundColor: Colors.green,
-                            icon: Icons.check,
-                            borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(10),
-                            ),
-                            onTap: () {},
-                          ),
-                        ),
-                        Expanded(
-                          child: PokeButton(
-                            backgroundColor: Color(0xFFFE3C72),
-                            icon: Icons.close,
-                            borderRadius: BorderRadius.only(
-                              bottomRight: Radius.circular(10),
-                            ),
-                            onTap: () {},
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ),
+              senderImage,
             );
           }
         }
 
-        if(usersDocsDecoded.length > 0){
-          return Padding(
-            padding: EdgeInsets.all(8.0),
-            child: GridView.count(
-              crossAxisCount: 2,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-              childAspectRatio: 0.84,
-              physics: ScrollPhysics(), // to disable GridView's scrolling
-              shrinkWrap: true,
-              children: usersDocsDecoded,
-            ),
+        if (usersDocsDecoded.length > 0) {
+          return Stack(
+            children: <Widget>[
+              Positioned(
+                top: SizeConfig.vertical * 50,
+                left: SizeConfig.horizontal * 35,
+                child: Text('Hai finito tutti i tuoi poke!'),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+                margin: EdgeInsets.only(top: SizeConfig.vertical * 5),
+                height: SizeConfig.vertical * 77,
+                child: TinderSwapCard(
+                  totalNum: receivedPokes.length,
+                  stackNum: 3,
+                  maxWidth: SizeConfig.horizontal * 95,
+                  maxHeight: SizeConfig.vertical * 95,
+                  minWidth: SizeConfig.horizontal * 90,
+                  minHeight: SizeConfig.horizontal * 90,
+                  cardBuilder: (context, index) => Card(
+                    child: CachedNetworkImage(
+                      imageUrl: usersDocsDecoded[index],
+                      fit: BoxFit.cover,
+                      imageBuilder: (context, image) {
+                        return Stack(
+                          children: <Widget>[
+                            Container(
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                image: image,
+                                fit: BoxFit.cover,
+                              ),),
+                            ),
+                            GradientOpacity(),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: <Widget>[
+
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: EdgeInsets.only(bottom: 16.0),
+                                      child: Text(
+                                        'DAI UN\'OCCHIATA',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: SizeConfig.horizontal * 3.5,
+                                          letterSpacing: 2,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            )
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                  swipeCompleteCallback:
+                      (CardSwipeOrientation orientation, int index) {
+                    if (orientation == CardSwipeOrientation.LEFT) {
+                      //TODO: aggiungere funzione per swipe a sinistra
+                    } else if (orientation == CardSwipeOrientation.RIGHT) {
+                      //TODO: aggiungere funzione per swipe a destra
+                    }
+                  },
+                ),
+              ),
+            ],
           );
-        } else{
+        } else {
           return Center(
-            child: Text('No Pokes received in the last 15 minutes'),
+            child: Text('Nessun Poke ricevuto negli ultimi 15 minuti'),
           );
         }
-
       },
     );
   }
 }
+
+// Padding(
+//             padding: EdgeInsets.all(8.0),
+//             child: GridView.count(
+//               crossAxisCount: 2,
+//               crossAxisSpacing: 10,
+//               mainAxisSpacing: 10,
+//               childAspectRatio: 0.84,
+//               physics: ScrollPhysics(), // to disable GridView's scrolling
+//               shrinkWrap: true,
+//               children: usersDocsDecoded,
+//             ),
+//           );

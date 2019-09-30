@@ -30,10 +30,8 @@ class _PokesScreenState extends State<PokesScreen> {
         top: false,
         child: Column(
           children: <Widget>[
-            Expanded(
-              child: ReceivedPokes(
-                accountName: accountName,
-              ),
+            ReceivedPokes(
+              accountName: accountName,
             ),
           ],
         ),
