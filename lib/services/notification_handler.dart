@@ -15,12 +15,12 @@ class NotificationHandler {
           context: context,
           builder: (BuildContext context){
             return AlertDialog(
-              title: Text("Poke"),
+              title: Text("${message['notification']['title']}"),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Text(
-                    "Hai ricevuto un Poke!",
+                    "${message['notification']['body']}",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
