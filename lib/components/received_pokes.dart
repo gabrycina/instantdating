@@ -22,6 +22,8 @@ class ReceivedPokes extends StatefulWidget {
 
 class _ReceivedPokesState extends State<ReceivedPokes>
     with TickerProviderStateMixin {
+  int removeFromListIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -43,22 +45,26 @@ class _ReceivedPokesState extends State<ReceivedPokes>
         List usersDocsDecoded = [];
 
         for (var receivedPoke in receivedPokes) {
-          var now = DateTime.now();
-          Timestamp pokeSentAtTimestamp = receivedPoke.data['time'];
+          if(receivedPoke.documentID != 'receivedCounter'){
+            var now = DateTime.now();
+            Timestamp pokeSentAtTimestamp = receivedPoke.data['time'];
 
-          //Converts Timestamp to DateTime and then calculates the difference
-          DateTime pokeSentAtDateTime = DateTime.fromMillisecondsSinceEpoch(
-              pokeSentAtTimestamp.millisecondsSinceEpoch);
-          var diff = now.difference(pokeSentAtDateTime);
-          if (diff.inMinutes <= 15) {
+            //Converts Timestamp to DateTime and then calculates the difference
+            DateTime pokeSentAtDateTime = DateTime.fromMillisecondsSinceEpoch(
+                pokeSentAtTimestamp.millisecondsSinceEpoch);
+            var diff = now.difference(pokeSentAtDateTime);
+            if (diff.inMinutes <= 15) {
 //            var senderEmail = receivedPoke.data['sender'];
 //            var senderLatitude = receivedPoke.data['position'].latitude;
 //            var senderLongitude = receivedPoke.data['position'].longitude;
-            var senderImage = receivedPoke.data['image'];
+              var senderImage = receivedPoke.data['image'];
 
-            usersDocsDecoded.add(
-              senderImage,
-            );
+              usersDocsDecoded.add(
+                senderImage,
+              );
+            }
+          }else{
+            removeFromListIndex++;
           }
         }
 
@@ -77,7 +83,7 @@ class _ReceivedPokesState extends State<ReceivedPokes>
                 margin: EdgeInsets.only(top: SizeConfig.vertical * 5),
                 height: SizeConfig.vertical * 77,
                 child: TinderSwapCard(
-                  totalNum: receivedPokes.length,
+                  totalNum: receivedPokes.length - removeFromListIndex,
                   stackNum: 3,
                   maxWidth: SizeConfig.horizontal * 95,
                   maxHeight: SizeConfig.vertical * 95,

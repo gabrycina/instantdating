@@ -34,7 +34,9 @@ class ProfileDataManager {
         _firestore
             .collection('devicesLocation')
             .document(loggedUser.email)
-            .collection('pokes');
+            .collection('pokes')
+            .document('receivedCounter')
+            .setData({'receivedPokesLifeTimeCounter': 0});
 
         // Write data to local
         await prefs.setString('accountName', loggedUser.email);
@@ -99,6 +101,21 @@ class ProfileDataManager {
         'image': loggedUser.photoUrl,
         'time': DateTime.now()
       });
+
+      DocumentSnapshot counterRef = await _firestore
+          .collection('devicesLocation')
+          .document(receiverEmail)
+          .collection('pokes').document('receivedCounter').get();
+
+      int counter = counterRef.data['receivedPokesLifeTimeCounter'];
+
+      _firestore
+          .collection('devicesLocation')
+          .document(receiverEmail)
+          .collection('pokes').document('receivedCounter').setData({
+        'receivedPokesLifeTimeCounter' : counter + 1
+      });
+
     } else {
       Fluttertoast.showToast(msg: 'You Need to Login First');
     }
