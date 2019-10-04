@@ -27,13 +27,8 @@ class _PokesScreenState extends State<PokesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        top: false,
-        child: Column(
-          children: <Widget>[
-            ReceivedPokes(
-              accountName: accountName,
-            ),
-          ],
+        child: ReceivedPokes(
+          accountName: accountName,
         ),
       ),
     );

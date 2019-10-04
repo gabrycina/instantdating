@@ -1,13 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_tindercard/flutter_tindercard.dart';
 import 'package:instant_dating/components/gradient_opacity.dart';
-import 'package:instant_dating/screens/PokesScreen/components/pokes_button.dart';
-import 'package:instant_dating/services/size_config.dart';
-
-//TODO: add GestureDetector on CircleAvatar
 import 'package:instant_dating/screens/VisitedUserScreen/visited_user_screen.dart';
+import 'package:instant_dating/services/size_config.dart';
+import 'package:instant_dating/screens/PokesScreen/components/SwipeAnimation/swipe_card.dart';
 
 final _firestore = Firestore.instance;
 
@@ -20,9 +17,9 @@ class ReceivedPokes extends StatefulWidget {
   _ReceivedPokesState createState() => _ReceivedPokesState();
 }
 
-class _ReceivedPokesState extends State<ReceivedPokes>
-    with TickerProviderStateMixin {
+class _ReceivedPokesState extends State<ReceivedPokes> {
   int removeFromListIndex = 0;
+  var val = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -42,10 +39,10 @@ class _ReceivedPokesState extends State<ReceivedPokes>
           );
 
         final receivedPokes = snapshot.data.documents;
-        List usersDocsDecoded = [];
+        List<dynamic> usersDocsDecoded = [];
 
         for (var receivedPoke in receivedPokes) {
-          if(receivedPoke.documentID != 'receivedCounter'){
+          if (receivedPoke.documentID != 'receivedCounter') {
             var now = DateTime.now();
             Timestamp pokeSentAtTimestamp = receivedPoke.data['time'];
 
@@ -54,16 +51,102 @@ class _ReceivedPokesState extends State<ReceivedPokes>
                 pokeSentAtTimestamp.millisecondsSinceEpoch);
             var diff = now.difference(pokeSentAtDateTime);
             if (diff.inMinutes <= 15) {
-//            var senderEmail = receivedPoke.data['sender'];
+              var senderEmail = receivedPoke.data['sender'];
 //            var senderLatitude = receivedPoke.data['position'].latitude;
 //            var senderLongitude = receivedPoke.data['position'].longitude;
               var senderImage = receivedPoke.data['image'];
-
               usersDocsDecoded.add(
-                senderImage,
+                Stack(
+                  children: <Widget>[
+                    Container(
+                      height: SizeConfig.vertical * 68,
+                      width: SizeConfig.horizontal * 78,
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: <Widget>[
+                          //image
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: SizeConfig.horizontal * 1,
+                                vertical: 5),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: CachedNetworkImage(
+                                imageUrl: senderImage,
+                                imageBuilder: (context, imageProvider) {
+                                  return Hero(
+                                    tag: senderEmail,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        image: DecorationImage(
+                                          image: imageProvider,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: SizeConfig.horizontal * 1,
+                                vertical: 0),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (cxt) => VisitedUser(
+                                      userImage: senderImage,
+                                      //change with name and surname
+                                      userEmail: senderEmail,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Hero(
+                                tag: 'opacity$senderImage',
+                                child: GradientOpacity(),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(left: 16.0, bottom: 10.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  'Christian, 19',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: SizeConfig.horizontal * 5,
+                                  ),
+                                ),
+                                Text(
+                                  'Palermo',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: SizeConfig.horizontal * 3,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               );
+              val++;
             }
-          }else{
+          } else {
             removeFromListIndex++;
           }
         }
@@ -71,75 +154,12 @@ class _ReceivedPokesState extends State<ReceivedPokes>
         if (usersDocsDecoded.length > 0) {
           return Stack(
             children: <Widget>[
-              Positioned(
-                top: SizeConfig.vertical * 50,
-                left: SizeConfig.horizontal * 35,
+              Align(
+                alignment: Alignment.center,
                 child: Text('Hai finito tutti i tuoi poke!'),
               ),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30.0),
-                ),
-                margin: EdgeInsets.only(top: SizeConfig.vertical * 5),
-                height: SizeConfig.vertical * 77,
-                child: TinderSwapCard(
-                  totalNum: receivedPokes.length - removeFromListIndex,
-                  stackNum: 3,
-                  maxWidth: SizeConfig.horizontal * 95,
-                  maxHeight: SizeConfig.vertical * 95,
-                  minWidth: SizeConfig.horizontal * 90,
-                  minHeight: SizeConfig.horizontal * 90,
-                  cardBuilder: (context, index) => Card(
-                    child: CachedNetworkImage(
-                      imageUrl: usersDocsDecoded[index],
-                      fit: BoxFit.cover,
-                      imageBuilder: (context, image) {
-                        return Stack(
-                          children: <Widget>[
-                            Container(
-                              decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                image: image,
-                                fit: BoxFit.cover,
-                              ),),
-                            ),
-                            GradientOpacity(),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: <Widget>[
-
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: EdgeInsets.only(bottom: 16.0),
-                                      child: Text(
-                                        'DAI UN\'OCCHIATA',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: SizeConfig.horizontal * 3.5,
-                                          letterSpacing: 2,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            )
-                          ],
-                        );
-                      },
-                    ),
-                  ),
-                  swipeCompleteCallback:
-                      (CardSwipeOrientation orientation, int index) {
-                    if (orientation == CardSwipeOrientation.LEFT) {
-                      //TODO: aggiungere funzione per swipe a sinistra
-                    } else if (orientation == CardSwipeOrientation.RIGHT) {
-                      //TODO: aggiungere funzione per swipe a destra
-                    }
-                  },
-                ),
+              SwipeCard(
+                data: usersDocsDecoded,
               ),
             ],
           );
@@ -152,16 +172,3 @@ class _ReceivedPokesState extends State<ReceivedPokes>
     );
   }
 }
-
-// Padding(
-//             padding: EdgeInsets.all(8.0),
-//             child: GridView.count(
-//               crossAxisCount: 2,
-//               crossAxisSpacing: 10,
-//               mainAxisSpacing: 10,
-//               childAspectRatio: 0.84,
-//               physics: ScrollPhysics(), // to disable GridView's scrolling
-//               shrinkWrap: true,
-//               children: usersDocsDecoded,
-//             ),
-//           );

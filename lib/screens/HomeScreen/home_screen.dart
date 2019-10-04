@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:smooth_star_rating/smooth_star_rating.dart';
+import 'package:instant_dating/screens/HomeScreen/components/custom_shape_clipper.dart';
 import 'package:instant_dating/components/devices_location_list.dart';
 import 'package:instant_dating/services/size_config.dart';
+import 'package:instant_dating/screens/HomeScreen/components/choice_chip.dart';
 
-import 'components/top_rounded_container.dart';
+//import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({this.user, this.key});
@@ -21,12 +22,20 @@ class _HomeScreenState extends State<HomeScreen> {
   var loggedUser;
   String accountName;
   double rating = 0.0;
-
+  List<bool> radioButtons = [true, false, false, false];
   @override
   void initState() {
     super.initState();
     loggedUser = widget.user;
     accountName = loggedUser.email;
+  }
+
+  void _onChipTap(int value) {
+    for (int i = 0; i < radioButtons.length; i++) {
+      radioButtons[i] = false;
+    }
+    radioButtons[value] = true;
+    setState(() {});
   }
 
   @override
@@ -41,39 +50,83 @@ class _HomeScreenState extends State<HomeScreen> {
           children: <Widget>[
             Stack(
               children: <Widget>[
-                TopRoundedContainer(
-                  pubName: 'Random Pub',
-                  subTitle: '2.500 visite mensili',
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: SizeConfig.vertical * 14),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Card(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50)),
-                        elevation: 10,
-                        color: Colors.white,
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 4.0, horizontal: 16.0),
-                          child: SmoothStarRating(
-                            spacing: 6,
-                            allowHalfRating: false,
-                            onRatingChanged: (v) {
-                              rating = v;
-                              setState(() {});
-                            },
-                            starCount: 5,
-                            rating: rating,
-                            size: SizeConfig.horizontal * 9,
-                            color: Color(0xFFFF655B),
-                            borderColor: Color(0xFFFF655B),
+                ClipPath(
+                  clipper: CustomShapeClipper(),
+                  child: Container(
+                    height: SizeConfig.horizontal * 60,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Color(0xFFFF5864), Color(0xFFFD297B)],
+                      ),
+                    ),
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding:
+                              EdgeInsets.only(top: SizeConfig.vertical * 5),
+                          child: Text(
+                            'Dove vuoi fare colpo stasera?',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: SizeConfig.horizontal * 5,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                        Padding(
+                          padding:
+                              EdgeInsets.only(top: SizeConfig.vertical * 4),
+                          child: Column(
+                            children: <Widget>[
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: <Widget>[
+                                  ChipChoice(
+                                    icon: Icons.people,
+                                    label: 'Vicino a te',
+                                    isSelected: radioButtons[0],
+                                    onTap: () => _onChipTap(0),
+                                  ),
+                                  ChipChoice(
+                                    icon: Icons.streetview,
+                                    label: 'Università',
+                                    isSelected: radioButtons[1],
+                                    onTap: () => _onChipTap(1),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: SizeConfig.vertical * 2,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: SizeConfig.horizontal * 15),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: <Widget>[
+                                    ChipChoice(
+                                      icon: Icons.local_pizza,
+                                      label: 'Pub',
+                                      isSelected: radioButtons[2],
+                                      onTap: () => _onChipTap(2),
+                                    ),
+                                    ChipChoice(
+                                      icon: Icons.school,
+                                      label: 'Scuola',
+                                      isSelected: radioButtons[3],
+                                      onTap: () => _onChipTap(3),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 )
               ],

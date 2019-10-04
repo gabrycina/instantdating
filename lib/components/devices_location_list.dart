@@ -37,7 +37,6 @@ class DevicesLocation extends StatelessWidget {
             // var userLatitude = userInfo.data['position'].latitude;
             // var userLongitude = userInfo.data['position'].longitude;
             var userImage = userInfo.data['profileImage'];
-
             usersDocsDecoded.add(
               Padding(
                 padding: EdgeInsets.only(bottom: 1.5),
