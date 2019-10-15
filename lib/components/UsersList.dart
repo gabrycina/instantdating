@@ -8,10 +8,10 @@ import 'package:instant_dating/services/size_config.dart';
 
 final _firestore = Firestore.instance;
 
-class DevicesLocation extends StatelessWidget {
-  DevicesLocation({this.accountName, this.user});
+class UsersList extends StatelessWidget {
+  UsersList({this.loggedUserId, this.user});
 
-  final String accountName;
+  final String loggedUserId;
   final dynamic user;
 
   @override
@@ -20,7 +20,7 @@ class DevicesLocation extends StatelessWidget {
     ProfileDataManager profileDataManager = ProfileDataManager();
 
     return StreamBuilder<QuerySnapshot>(
-      stream: _firestore.collection('devicesLocation').snapshots(),
+      stream: _firestore.collection('users').snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData)
           return Center(
@@ -32,11 +32,12 @@ class DevicesLocation extends StatelessWidget {
         final usersDocs = snapshot.data.documents;
         List<Padding> usersDocsDecoded = [];
         for (var userInfo in usersDocs) {
-          if (userInfo.data['accountName'] != accountName) {
-            var userEmail = userInfo.data['accountName'];
+          if (userInfo.data['id'] != loggedUserId) {
+            var receiverUserEmail = userInfo.data['email'];
             // var userLatitude = userInfo.data['position'].latitude;
             // var userLongitude = userInfo.data['position'].longitude;
-            var userImage = userInfo.data['profileImage'];
+            //TODO: User's image set up
+            var userImage = 'https://images.unsplash.com/photo-1552162864-987ac51d1177?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1000&q=80';
             usersDocsDecoded.add(
               Padding(
                 padding: EdgeInsets.only(bottom: 1.5),
@@ -48,7 +49,7 @@ class DevicesLocation extends StatelessWidget {
                       padding: EdgeInsets.symmetric(
                           horizontal: SizeConfig.horizontal * 1, vertical: 5),
                       child: Hero(
-                        tag: userEmail,
+                        tag: receiverUserEmail,
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
@@ -81,7 +82,7 @@ class DevicesLocation extends StatelessWidget {
                               builder: (cxt) => VisitedUser(
                                 userImage: userImage,
                                 //change with name and surname
-                                userEmail: userEmail,
+                                userEmail: receiverUserEmail,
                               ),
                             ),
                           );
@@ -115,7 +116,7 @@ class DevicesLocation extends StatelessWidget {
                               child: InkWell(
                                 onTap: () async {
                                   await profileDataManager.sendPoke(
-                                      userEmail, user);
+                                      receiverUserEmail, user);
                                   Scaffold.of(context).showSnackBar(
                                     SnackBar(
                                       content: Text('Poke inviato'),

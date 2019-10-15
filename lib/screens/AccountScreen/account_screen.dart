@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:instant_dating/components/gradient_opacity.dart';
 import 'package:instant_dating/screens/VisitedUserScreen/components/panel_title.dart';
+import 'package:instant_dating/services/profile_data_manager.dart';
 import 'package:instant_dating/services/size_config.dart';
 import 'package:instant_dating/services/user_account.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -11,7 +12,7 @@ class AccountScreen extends StatefulWidget {
 
   static final id = 'user_screen';
   final Key key;
-  final user;
+  final UserAccount user;
 
   @override
   _AccountScreenState createState() => _AccountScreenState();
@@ -20,15 +21,17 @@ class AccountScreen extends StatefulWidget {
 class _AccountScreenState extends State<AccountScreen> {
   @override
   Widget build(BuildContext context) {
-    var loggedUser = widget.user;
+//    var loggedUser = widget.user;
     SizeConfig().init(context);
     return Scaffold(
       body: SafeArea(
         child: Stack(
           children: <Widget>[
+            //TODO: Implement imageUrls
             SizedBox.expand(
               child: CachedNetworkImage(
-                imageUrl: loggedUser.photoUrl,
+                //TODO: Remove static placeholders
+                imageUrl: 'https://images.unsplash.com/photo-1552162864-987ac51d1177?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1000&q=80',
                 fit: BoxFit.cover,
               ),
             ),
@@ -126,7 +129,7 @@ class _AccountScreenState extends State<AccountScreen> {
               ),
             ),
             GestureDetector(
-              onTap: () async => await UserAccount().googleLogout(context),
+              onTap: () async => await ProfileDataManager().handleLogout(context),
               child: Icon(Icons.close),
             ),
           ],

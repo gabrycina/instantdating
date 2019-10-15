@@ -9,9 +9,9 @@ import 'package:instant_dating/screens/PokesScreen/components/SwipeAnimation/swi
 final _firestore = Firestore.instance;
 
 class ReceivedPokes extends StatefulWidget {
-  ReceivedPokes({this.accountName});
+  ReceivedPokes({this.accountEmail});
 
-  final String accountName;
+  final String accountEmail;
 
   @override
   _ReceivedPokesState createState() => _ReceivedPokesState();
@@ -23,12 +23,13 @@ class _ReceivedPokesState extends State<ReceivedPokes> {
 
   @override
   Widget build(BuildContext context) {
+    var accountEmail = widget.accountEmail;
+
     SizeConfig().init(context);
     return StreamBuilder<QuerySnapshot>(
       stream: _firestore
-          .collection('devicesLocation')
-          .document(widget.accountName)
-          .collection('pokes')
+          .collection('requests')
+          .where('receiver', isEqualTo: accountEmail)
           .snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData)
@@ -42,19 +43,18 @@ class _ReceivedPokesState extends State<ReceivedPokes> {
         List<dynamic> usersDocsDecoded = [];
 
         for (var receivedPoke in receivedPokes) {
-          if (receivedPoke.documentID != 'receivedCounter') {
             var now = DateTime.now();
-            Timestamp pokeSentAtTimestamp = receivedPoke.data['time'];
-
+            Timestamp pokeSentAtTimestamp = receivedPoke.data['sentAt'];
             //Converts Timestamp to DateTime and then calculates the difference
             DateTime pokeSentAtDateTime = DateTime.fromMillisecondsSinceEpoch(
                 pokeSentAtTimestamp.millisecondsSinceEpoch);
             var diff = now.difference(pokeSentAtDateTime);
             if (diff.inMinutes <= 15) {
               var senderEmail = receivedPoke.data['sender'];
+              var senderImage = 'https://images.unsplash.com/photo-1552162864-987ac51d1177?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1000&q=80';
 //            var senderLatitude = receivedPoke.data['position'].latitude;
 //            var senderLongitude = receivedPoke.data['position'].longitude;
-              var senderImage = receivedPoke.data['image'];
+//              var senderImage = receivedPoke.data['imageUrl'];
               usersDocsDecoded.add(
                 Stack(
                   children: <Widget>[
@@ -146,9 +146,6 @@ class _ReceivedPokesState extends State<ReceivedPokes> {
               );
               val++;
             }
-          } else {
-            removeFromListIndex++;
-          }
         }
 
         if (usersDocsDecoded.length > 0) {

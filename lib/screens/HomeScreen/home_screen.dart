@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:instant_dating/screens/HomeScreen/components/custom_shape_clipper.dart';
-import 'package:instant_dating/components/devices_location_list.dart';
+import 'package:instant_dating/components/UsersList.dart';
 import 'package:instant_dating/services/size_config.dart';
 import 'package:instant_dating/screens/HomeScreen/components/choice_chip.dart';
-
-//import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({this.user, this.key});
@@ -12,7 +10,6 @@ class HomeScreen extends StatefulWidget {
   static final id = 'home_screen';
   final Key key;
   final user;
-//  final String type;
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -20,14 +17,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   var loggedUser;
-  String accountName;
   double rating = 0.0;
   List<bool> radioButtons = [true, false, false, false];
+
   @override
   void initState() {
     super.initState();
     loggedUser = widget.user;
-    accountName = loggedUser.email;
   }
 
   void _onChipTap(int value) {
@@ -131,8 +127,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 )
               ],
             ),
-            DevicesLocation(
-              accountName: accountName,
+            UsersList(
+              loggedUserId: loggedUser.id,
               user: loggedUser,
             ),
           ],

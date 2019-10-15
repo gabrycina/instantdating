@@ -4,29 +4,29 @@ import 'package:instant_dating/screens/HomeScreen/home_screen.dart';
 import 'package:instant_dating/services/profile_data_manager.dart';
 import 'package:instant_dating/services/notification_handler.dart';
 import 'package:instant_dating/screens/PokesScreen/pokes_screen.dart';
+import 'package:instant_dating/services/user_account.dart';
 
 class BottomNavigationBarController extends StatefulWidget {
   BottomNavigationBarController({this.loggedUser});
-
-  final loggedUser;
+  final UserAccount loggedUser;
 
   @override
   _BottomNavigationBarControllerState createState() =>
       _BottomNavigationBarControllerState();
 }
 
-class _BottomNavigationBarControllerState
-    extends State<BottomNavigationBarController> {
+class _BottomNavigationBarControllerState extends State<BottomNavigationBarController> {
+
+  final PageStorageBucket bucket = PageStorageBucket();
   var loggedUser;
+
   List<Widget> pages;
   ProfileDataManager profileDataManager = ProfileDataManager();
   String accountName;
-  final PageStorageBucket bucket = PageStorageBucket();
   int _selectedIndex = 1;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     loggedUser = widget.loggedUser;
     setupUser();
@@ -54,9 +54,8 @@ class _BottomNavigationBarControllerState
   }
 
   void setupUser() async {
-    var accountName = loggedUser.email;
     await profileDataManager.isNewUserAndSetup(loggedUser);
-    await profileDataManager.listenCurrentUserLocation(accountName);
+    await profileDataManager.listenCurrentUserLocation(loggedUser.id);
   }
 
   Widget _bottomNavigationBar(int selectedIndex) => BottomNavigationBar(

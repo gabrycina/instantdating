@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:instant_dating/components/received_pokes.dart';
+import 'package:instant_dating/services/user_account.dart';
 
 class PokesScreen extends StatefulWidget {
   PokesScreen({this.user, this.key});
 
   static final id = 'pokes_screen';
   final Key key;
-  final user;
+  final UserAccount user;
 
   @override
   _PokesScreenState createState() => _PokesScreenState();
@@ -14,13 +15,13 @@ class PokesScreen extends StatefulWidget {
 
 class _PokesScreenState extends State<PokesScreen> {
   var loggedUser;
-  String accountName;
+  String accountEmail;
 
   @override
   void initState() {
     super.initState();
     loggedUser = widget.user;
-    accountName = loggedUser.email;
+    accountEmail = loggedUser.email;
   }
 
   @override
@@ -28,7 +29,7 @@ class _PokesScreenState extends State<PokesScreen> {
     return Scaffold(
       body: SafeArea(
         child: ReceivedPokes(
-          accountName: accountName,
+          accountEmail: accountEmail,
         ),
       ),
     );

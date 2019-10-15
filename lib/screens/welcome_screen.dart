@@ -1,12 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:instant_dating/services/size_config.dart';
-import 'package:instant_dating/services/user_account.dart';
-
 import 'HomeScreen/components/login_social_button.dart';
-//import 'package:instant_dating/components/action_button.dart';
-//import 'login_screen.dart';
-//import 'registration_screen.dart';
+import 'package:instant_dating/services/profile_data_manager.dart';
+
 
 class WelcomeScreen extends StatefulWidget {
   static final String id = 'welcome_screen';
@@ -43,7 +40,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   Text(
-                    'Instant Dating',
+                    'Real Life\nInterest Dating',
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: SizeConfig.horizontal * 15,
@@ -54,7 +52,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       Padding(
                         padding: EdgeInsets.only(bottom: 15.0),
                         child: Text(
-                          'Find, match and chat with\nnew people event the ones nearby',
+                          'Find, match and chat with new people',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.white,
@@ -63,27 +61,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         ),
                       ),
 
-                      LoginSocialButton(
-                        color: Color(0xFF1977D4),
-                        label: 'Login With Facebook',
-                        onTap: () {},
-                      ),
-
-                      Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text(
-                          'or',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: SizeConfig.horizontal * 5),
-                        ),
-                      ),
-
                       //Google
                       LoginSocialButton(
                         color: Color(0xFFE15340),
                         label: 'Login With Google',
-                        onTap: () => UserAccount().googleLogin(context),
+                        onTap: () => ProfileDataManager().handleSignIn(context),
                       ),
                     ],
                   ),
