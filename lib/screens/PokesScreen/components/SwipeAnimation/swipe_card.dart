@@ -1,17 +1,19 @@
 import 'package:instant_dating/services/size_config.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'gesture_card_deck.dart';
 import 'package:flutter/material.dart';
 
 class SwipeCard extends StatelessWidget {
-  SwipeCard({this.data, this.userImage, this.userEmail});
+  SwipeCard({this.data, this.requestsIds});
 
   final List data;
-  final userImage;
-  final userEmail;
+  final List requestsIds;
+  final _firestore = Firestore.instance;
 
   @override
   Widget build(BuildContext context) {
+    final requestsRef = _firestore.collection('requests');
+
     return new GestureCardDeck(
       isButtonFixed: true,
       showAsDeck: true,
@@ -43,10 +45,18 @@ class SwipeCard extends StatelessWidget {
       onSwipeLeft: (index) {
         print("on swipe left");
         print(index);
+        //Sets state to rejected
+        requestsRef
+            .document(requestsIds[index])
+            .setData({'state': 'rejected'}, merge: true);
       },
       onSwipeRight: (index) {
         print("on swipe right");
         print(index);
+        //Sets state to accepted
+        requestsRef
+            .document(requestsIds[index])
+            .setData({'state': 'accepted'}, merge: true);
       },
       onCardTap: (index) {},
       leftPosition: SizeConfig.horizontal * 9.5,

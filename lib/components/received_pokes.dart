@@ -41,6 +41,7 @@ class _ReceivedPokesState extends State<ReceivedPokes> {
 
         final receivedPokes = snapshot.data.documents;
         List<dynamic> usersDocsDecoded = [];
+        List<dynamic> requestsIds = [];
 
         for (var receivedPoke in receivedPokes) {
             var now = DateTime.now();
@@ -49,12 +50,13 @@ class _ReceivedPokesState extends State<ReceivedPokes> {
             DateTime pokeSentAtDateTime = DateTime.fromMillisecondsSinceEpoch(
                 pokeSentAtTimestamp.millisecondsSinceEpoch);
             var diff = now.difference(pokeSentAtDateTime);
-            if (diff.inMinutes <= 15) {
+            if (receivedPoke.data['state'] != 'accepted' && receivedPoke.data['state'] != 'rejected' && diff.inMinutes <= 15) {
               var senderEmail = receivedPoke.data['sender'];
               var senderImage = 'https://images.unsplash.com/photo-1552162864-987ac51d1177?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1000&q=80';
 //            var senderLatitude = receivedPoke.data['position'].latitude;
 //            var senderLongitude = receivedPoke.data['position'].longitude;
 //              var senderImage = receivedPoke.data['imageUrl'];
+              requestsIds.add(receivedPoke.data['id']);
               usersDocsDecoded.add(
                 Stack(
                   children: <Widget>[
@@ -157,6 +159,7 @@ class _ReceivedPokesState extends State<ReceivedPokes> {
               ),
               SwipeCard(
                 data: usersDocsDecoded,
+                requestsIds: requestsIds,
               ),
             ],
           );

@@ -5,6 +5,7 @@ import 'package:instant_dating/services/profile_data_manager.dart';
 import 'package:instant_dating/services/notification_handler.dart';
 import 'package:instant_dating/screens/PokesScreen/pokes_screen.dart';
 import 'package:instant_dating/services/user_account.dart';
+import 'package:instant_dating/screens/AcceptedRequestsScreen/accepted_requests_screen.dart';
 
 class BottomNavigationBarController extends StatefulWidget {
   BottomNavigationBarController({this.loggedUser});
@@ -33,6 +34,10 @@ class _BottomNavigationBarControllerState extends State<BottomNavigationBarContr
     pages = [
       PokesScreen(
         key: PageStorageKey('pokes_screen'),
+        user: loggedUser,
+      ),
+      AcceptedRequestsScreen(
+        key: PageStorageKey('accepted_requests_screen'),
         user: loggedUser,
       ),
       HomeScreen(
@@ -66,13 +71,28 @@ class _BottomNavigationBarControllerState extends State<BottomNavigationBarContr
             icon: Icon(
               Icons.notifications_active,
               color:
-                  _selectedIndex == 0 ? Color(0xFFFF655B) : Color(0xFF686868),
+              _selectedIndex == 0 ? Color(0xFFFF655B) : Color(0xFF686868),
             ),
             title: Text(
               'Pokes',
               style: TextStyle(
                 color:
-                    _selectedIndex == 0 ? Color(0xFFFF655B) : Color(0xFF686868),
+                _selectedIndex == 0 ? Color(0xFFFF655B) : Color(0xFF686868),
+              ),
+            ),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.beenhere,
+              color:
+              _selectedIndex == 1 ? Color(0xFFFF655B) : Color(0xFF686868),
+              size: 22,
+            ),
+            title: Text(
+              'Accepted',
+              style: TextStyle(
+                color:
+                _selectedIndex == 1 ? Color(0xFFFF655B) : Color(0xFF686868),
               ),
             ),
           ),
@@ -80,13 +100,13 @@ class _BottomNavigationBarControllerState extends State<BottomNavigationBarContr
             icon: Icon(
               Icons.home,
               color:
-                  _selectedIndex == 1 ? Color(0xFFFF655B) : Color(0xFF686868),
+                  _selectedIndex == 2 ? Color(0xFFFF655B) : Color(0xFF686868),
             ),
             title: Text(
               'Home',
               style: TextStyle(
                 color:
-                    _selectedIndex == 1 ? Color(0xFFFF655B) : Color(0xFF686868),
+                    _selectedIndex == 2 ? Color(0xFFFF655B) : Color(0xFF686868),
               ),
             ),
           ),
@@ -94,13 +114,13 @@ class _BottomNavigationBarControllerState extends State<BottomNavigationBarContr
             icon: Icon(
               Icons.account_circle,
               color:
-                  _selectedIndex == 2 ? Color(0xFFFF655B) : Color(0xFF686868),
+                  _selectedIndex == 3 ? Color(0xFFFF655B) : Color(0xFF686868),
             ),
             title: Text(
               'Account',
               style: TextStyle(
                 color:
-                    _selectedIndex == 2 ? Color(0xFFFF655B) : Color(0xFF686868),
+                    _selectedIndex == 3 ? Color(0xFFFF655B) : Color(0xFF686868),
               ),
             ),
           ),
