@@ -34,10 +34,12 @@ class UsersList extends StatelessWidget {
         for (var userInfo in usersDocs) {
           if (userInfo.data['id'] != loggedUserId) {
             var receiverUserEmail = userInfo.data['email'];
+            var userImage = userInfo.data['imageUrl'];
+            var userId = userInfo.data['id'];
+            print(receiverUserEmail);
             // var userLatitude = userInfo.data['position'].latitude;
             // var userLongitude = userInfo.data['position'].longitude;
-            //TODO: User's image set up
-            var userImage = 'https://images.unsplash.com/photo-1552162864-987ac51d1177?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1000&q=80';
+
             usersDocsDecoded.add(
               Padding(
                 padding: EdgeInsets.only(bottom: 1.5),
@@ -83,12 +85,13 @@ class UsersList extends StatelessWidget {
                                 userImage: userImage,
                                 //change with name and surname
                                 userEmail: receiverUserEmail,
+                                userId: userId,
                               ),
                             ),
                           );
                         },
                         child: Hero(
-                          tag: 'opacity$userImage',
+                          tag: userId,
                           child: GradientOpacity(),
                         ),
                       ),

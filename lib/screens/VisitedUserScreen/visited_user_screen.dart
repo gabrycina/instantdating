@@ -8,10 +8,11 @@ import 'components/panel_title.dart';
 import 'components/user_image.dart';
 
 class VisitedUser extends StatelessWidget {
-  VisitedUser({this.userImage, this.userEmail});
+  VisitedUser({this.userImage, this.userEmail, this.userId});
 
   final String userImage;
   final String userEmail;
+  final String userId;
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +27,7 @@ class VisitedUser extends StatelessWidget {
               UserImage(
                 heroTag: userEmail,
                 image: userImage,
+                userId: userId,
               ),
               Panel(
                 screenSize: MediaQuery.of(context).size.height,

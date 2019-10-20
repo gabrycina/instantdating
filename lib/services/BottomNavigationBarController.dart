@@ -16,15 +16,15 @@ class BottomNavigationBarController extends StatefulWidget {
       _BottomNavigationBarControllerState();
 }
 
-class _BottomNavigationBarControllerState extends State<BottomNavigationBarController> {
-
+class _BottomNavigationBarControllerState
+    extends State<BottomNavigationBarController> {
   final PageStorageBucket bucket = PageStorageBucket();
   var loggedUser;
 
   List<Widget> pages;
   ProfileDataManager profileDataManager = ProfileDataManager();
   String accountName;
-  int _selectedIndex = 1;
+  int _selectedIndex = 2;
 
   @override
   void initState() {
@@ -71,13 +71,13 @@ class _BottomNavigationBarControllerState extends State<BottomNavigationBarContr
             icon: Icon(
               Icons.notifications_active,
               color:
-              _selectedIndex == 0 ? Color(0xFFFF655B) : Color(0xFF686868),
+                  _selectedIndex == 0 ? Color(0xFFFF655B) : Color(0xFF686868),
             ),
             title: Text(
               'Pokes',
               style: TextStyle(
                 color:
-                _selectedIndex == 0 ? Color(0xFFFF655B) : Color(0xFF686868),
+                    _selectedIndex == 0 ? Color(0xFFFF655B) : Color(0xFF686868),
               ),
             ),
           ),
@@ -85,14 +85,14 @@ class _BottomNavigationBarControllerState extends State<BottomNavigationBarContr
             icon: Icon(
               Icons.beenhere,
               color:
-              _selectedIndex == 1 ? Color(0xFFFF655B) : Color(0xFF686868),
+                  _selectedIndex == 1 ? Color(0xFFFF655B) : Color(0xFF686868),
               size: 22,
             ),
             title: Text(
               'Accepted',
               style: TextStyle(
                 color:
-                _selectedIndex == 1 ? Color(0xFFFF655B) : Color(0xFF686868),
+                    _selectedIndex == 1 ? Color(0xFFFF655B) : Color(0xFF686868),
               ),
             ),
           ),

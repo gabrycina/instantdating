@@ -11,10 +11,12 @@ class UserImage extends StatefulWidget {
     Key key,
     @required this.heroTag,
     @required this.image,
+    @required this.userId,
   }) : super(key: key);
 
-  final String heroTag;
+  final String heroTag; //equal to email
   final String image;
+  final String userId;
 
   @override
   _UserImageState createState() => _UserImageState();
@@ -89,7 +91,7 @@ class _UserImageState extends State<UserImage>
                     ),
                   ),
                   child: Hero(
-                    tag: 'opacity${widget.image}',
+                    tag: widget.userId,
                     child: GradientOpacity(),
                   ),
                 ),
