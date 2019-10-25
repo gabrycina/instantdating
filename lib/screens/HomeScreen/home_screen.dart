@@ -3,28 +3,23 @@ import 'package:instant_dating/screens/HomeScreen/components/custom_shape_clippe
 import 'package:instant_dating/components/UsersList.dart';
 import 'package:instant_dating/services/size_config.dart';
 import 'package:instant_dating/screens/HomeScreen/components/choice_chip.dart';
+import 'package:provider/provider.dart';
+import 'package:instant_dating/services/user_repository.dart';
 
 class HomeScreen extends StatefulWidget {
-  HomeScreen({this.user, this.key});
+  HomeScreen({this.key});
 
   static final id = 'home_screen';
   final Key key;
-  final user;
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  var loggedUser;
   double rating = 0.0;
   List<bool> radioButtons = [true, false, false, false];
 
-  @override
-  void initState() {
-    super.initState();
-    loggedUser = widget.user;
-  }
 
   void _onChipTap(int value) {
     for (int i = 0; i < radioButtons.length; i++) {
@@ -36,6 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var user = Provider.of<UserRepository>(context).user;
     SizeConfig().init(context);
 
     return SafeArea(
@@ -128,8 +124,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
             UsersList(
-              loggedUserId: loggedUser.id,
-              user: loggedUser,
+              loggedUserId: user.uid,
+              user: user,
             ),
           ],
         ),

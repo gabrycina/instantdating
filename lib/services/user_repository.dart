@@ -1,59 +1,101 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:instant_dating/screens/welcome_screen.dart';
 import 'package:instant_dating/services/notification_handler.dart';
 import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'dart:async';
-import 'BottomNavigationBarController.dart';
-import 'user_account.dart';
 
-class ProfileDataManager {
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+enum Status { Uninitialized, Authenticated, Authenticating, Unauthenticated }
+
+class UserRepository with ChangeNotifier{
+  FirebaseAuth _auth;
+  FirebaseUser _user;
+  GoogleSignIn _googleSignIn;
+  Status _status = Status.Uninitialized;
   final _firestore = Firestore.instance;
+
+  //TODO:Review Shared Preferences thing (Saving data locally)
   SharedPreferences prefs;
 
+  UserRepository();
 
-  Future<void> handleSignIn(BuildContext context) async {
+  UserRepository.instance()
+      : _auth = FirebaseAuth.instance,
+        _googleSignIn = GoogleSignIn() {
+    _auth.onAuthStateChanged.listen(_onAuthStateChanged);
+  }
+
+
+  Future<void> _onAuthStateChanged(FirebaseUser firebaseUser) async {
+    if (firebaseUser == null) {
+      _status = Status.Unauthenticated;
+    } else {
+      _user = firebaseUser;
+      _status = Status.Authenticated;
+    }
+    notifyListeners();
+  }
+
+  Status get status => _status;
+  FirebaseUser get user => _user;
+
+  Future<bool> signIn(String email, String password) async {
     try {
-      GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-      if (googleUser != null){
-        UserAccount userAccount = UserAccount(email: googleUser.email, id: googleUser.id);
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  BottomNavigationBarController(loggedUser: userAccount)),
-        );
-      }
+      _status = Status.Authenticating;
+      notifyListeners();
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      setupUser();
+      return true;
     } catch (e) {
-      //TODO: Handle Errors
-      print(e);
+      _status = Status.Unauthenticated;
+      notifyListeners();
+      return false;
     }
   }
 
+  Future<bool> signInWithGoogle() async {
+    try {
+      _status = Status.Authenticating;
+      notifyListeners();
+      final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+      final GoogleSignInAuthentication googleAuth =
+      await googleUser.authentication;
+      final AuthCredential credential = GoogleAuthProvider.getCredential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      await _auth.signInWithCredential(credential);
+      setupUser();
+      return true;
+    } catch (e) {
+      print(e);
+      _status = Status.Unauthenticated;
+      notifyListeners();
+      return false;
+    }
 
-  Future<void> handleLogout(BuildContext context) async {
-    await _googleSignIn.signOut();
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => WelcomeScreen(),
-      ),
-    );
   }
 
+  Future signOut() async {
+    listenCurrentUserLocation("stop");
+    _auth.signOut();
+    _googleSignIn.signOut();
+    _status = Status.Unauthenticated;
+    notifyListeners();
+    return Future.delayed(Duration.zero);
+  }
 
-  Future<void> isNewUserAndSetup(UserAccount loggedUser) async {
+  Future<void> isNewUserAndSetup(FirebaseUser user) async {
     prefs = await SharedPreferences.getInstance();
 
-    if (loggedUser != null) {
+    if (user != null) {
       // Check is already sign up
       final QuerySnapshot result = await _firestore
           .collection('users')
-          .where('id', isEqualTo: loggedUser.id)
+          .where('id', isEqualTo: user.uid)
           .getDocuments();
 
       final List<DocumentSnapshot> documents = result.documents;
@@ -62,10 +104,10 @@ class ProfileDataManager {
         // Create user data into the server if is a new user
         _firestore
             .collection('users')
-            .document(loggedUser.id)
+            .document(user.uid)
             .setData({
-          'id': loggedUser.id,
-          'email' : loggedUser.email,
+          'id': user.uid,
+          'email' : user.email,
           'lastPosition': GeoPoint(0, 0), //Starts from the Null island!
           'token': await NotificationHandler().getToken(),
           'bio' : '',
@@ -76,7 +118,7 @@ class ProfileDataManager {
 
         // Write data to local
         //TODO:Make Login persistent
-        await prefs.setString('email', loggedUser.email);
+        await prefs.setString('email', user.email);
         await prefs.setString('position', GeoPoint(0, 0).toString());
         await prefs.setString('token', await NotificationHandler().getToken());
 
@@ -99,11 +141,11 @@ class ProfileDataManager {
   }
 
 
-  Future<void> listenCurrentUserLocation(String id) async {
+  Future<void> listenCurrentUserLocation(String uid) async {
     var location = new Location();
 
     DocumentReference docRef =
-        _firestore.collection('users').document(id);
+        _firestore.collection('users').document(uid);
 
     // keep a reference to your stream subscription
     StreamSubscription<LocationData> dataSub;
@@ -119,21 +161,19 @@ class ProfileDataManager {
       });
     });
 
-    if (id == "stop") {
+    if (uid == "stop") {
       // user navigated away!
       dataSub.cancel();
-    } else {
       print("Location Stream subscription stopped");
     }
   }
 
 
-  Future<void> sendPoke(String receiverUserEmail, UserAccount user) async {
-    var loggedUser = user;
-    if (loggedUser != null) {
+  Future<void> sendPoke(String receiverUserEmail, FirebaseUser user) async {
+    if (user != null) {
       DocumentSnapshot loggedUserDocRef = await _firestore
         .collection('users')
-        .document(loggedUser.id)
+        .document(user.uid)
         .get();
 
       //Hashes the timestamp to generate an unique id for the request
@@ -145,7 +185,7 @@ class ProfileDataManager {
           .document(reqId)
           .setData({
         'id' : reqId,
-        'sender': loggedUser.email,
+        'sender': user.email,
         'receiver' : receiverUserEmail,
         'sentFrom': loggedUserDocRef.data['lastPosition'],  //Actual position of the sender
         'sentAt': DateTime.now(),
@@ -157,4 +197,8 @@ class ProfileDataManager {
     }
   }
 
+  void setupUser() async {
+    await isNewUserAndSetup(_user);
+    await listenCurrentUserLocation(_user.uid);
+  }
 }

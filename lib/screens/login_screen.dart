@@ -2,17 +2,20 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:instant_dating/services/size_config.dart';
 import 'HomeScreen/components/login_social_button.dart';
-import 'package:instant_dating/services/profile_data_manager.dart';
+import 'package:instant_dating/services/user_repository.dart';
+import 'package:provider/provider.dart';
 
 
-class WelcomeScreen extends StatefulWidget {
+class LoginScreen extends StatefulWidget {
   static final String id = 'welcome_screen';
 
   @override
-  _WelcomeScreenState createState() => _WelcomeScreenState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _WelcomeScreenState extends State<WelcomeScreen> {
+class _LoginScreenState extends State<LoginScreen> {
+  UserRepository userRepository = UserRepository();
+
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -65,7 +68,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       LoginSocialButton(
                         color: Color(0xFFE15340),
                         label: 'Login With Google',
-                        onTap: () => ProfileDataManager().handleSignIn(context),
+                        onTap: () => Provider.of<UserRepository>(context).signInWithGoogle()
                       ),
                     ],
                   ),

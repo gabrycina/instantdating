@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:instant_dating/screens/AccountScreen/account_screen.dart';
 import 'package:instant_dating/screens/HomeScreen/home_screen.dart';
-import 'package:instant_dating/services/profile_data_manager.dart';
 import 'package:instant_dating/services/notification_handler.dart';
 import 'package:instant_dating/screens/PokesScreen/pokes_screen.dart';
-import 'package:instant_dating/services/user_account.dart';
 import 'package:instant_dating/screens/AcceptedRequestsScreen/accepted_requests_screen.dart';
 
 class BottomNavigationBarController extends StatefulWidget {
-  BottomNavigationBarController({this.loggedUser});
-  final UserAccount loggedUser;
-
   @override
   _BottomNavigationBarControllerState createState() =>
       _BottomNavigationBarControllerState();
@@ -19,48 +14,29 @@ class BottomNavigationBarController extends StatefulWidget {
 class _BottomNavigationBarControllerState
     extends State<BottomNavigationBarController> {
   final PageStorageBucket bucket = PageStorageBucket();
-  var loggedUser;
 
   List<Widget> pages;
-  ProfileDataManager profileDataManager = ProfileDataManager();
   String accountName;
   int _selectedIndex = 2;
 
   @override
   void initState() {
     super.initState();
-    loggedUser = widget.loggedUser;
-    setupUser();
     pages = [
       PokesScreen(
         key: PageStorageKey('pokes_screen'),
-        user: loggedUser,
       ),
       AcceptedRequestsScreen(
         key: PageStorageKey('accepted_requests_screen'),
-        user: loggedUser,
       ),
       HomeScreen(
         key: PageStorageKey('home_screen'),
-        user: loggedUser,
       ),
       AccountScreen(
         key: PageStorageKey('account_screen'),
-        user: loggedUser,
       ),
     ];
     NotificationHandler().setup(context);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    profileDataManager.listenCurrentUserLocation("stop");
-  }
-
-  void setupUser() async {
-    await profileDataManager.isNewUserAndSetup(loggedUser);
-    await profileDataManager.listenCurrentUserLocation(loggedUser.id);
   }
 
   Widget _bottomNavigationBar(int selectedIndex) => BottomNavigationBar(

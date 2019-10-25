@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:instant_dating/components/gradient_opacity.dart';
 import 'package:instant_dating/screens/VisitedUserScreen/visited_user_screen.dart';
-import 'package:instant_dating/services/profile_data_manager.dart';
+import 'package:instant_dating/services/user_repository.dart';
 import 'package:instant_dating/services/size_config.dart';
 
 final _firestore = Firestore.instance;
@@ -17,7 +17,7 @@ class UsersList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    ProfileDataManager profileDataManager = ProfileDataManager();
+    UserRepository profileDataManager = UserRepository();
 
     return StreamBuilder<QuerySnapshot>(
       stream: _firestore.collection('users').snapshots(),

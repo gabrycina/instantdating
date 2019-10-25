@@ -2,17 +2,16 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:instant_dating/components/gradient_opacity.dart';
 import 'package:instant_dating/screens/VisitedUserScreen/components/panel_title.dart';
-import 'package:instant_dating/services/profile_data_manager.dart';
+import 'package:instant_dating/services/user_repository.dart';
 import 'package:instant_dating/services/size_config.dart';
-import 'package:instant_dating/services/user_account.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:provider/provider.dart';
 
 class AccountScreen extends StatefulWidget {
-  AccountScreen({this.user, this.key});
+  AccountScreen({this.key});
 
   static final id = 'user_screen';
   final Key key;
-  final UserAccount user;
 
   @override
   _AccountScreenState createState() => _AccountScreenState();
@@ -21,7 +20,6 @@ class AccountScreen extends StatefulWidget {
 class _AccountScreenState extends State<AccountScreen> {
   @override
   Widget build(BuildContext context) {
-//    var loggedUser = widget.user;
     SizeConfig().init(context);
     return Scaffold(
       body: SafeArea(
@@ -129,7 +127,7 @@ class _AccountScreenState extends State<AccountScreen> {
               ),
             ),
             GestureDetector(
-              onTap: () async => await ProfileDataManager().handleLogout(context),
+              onTap: () => Provider.of<UserRepository>(context).signOut(),
               child: Icon(Icons.close),
             ),
           ],

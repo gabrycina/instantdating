@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:instant_dating/screens/VisitedUserScreen/visited_user_screen.dart';
 import 'package:instant_dating/services/size_config.dart';
-import 'package:instant_dating/services/user_account.dart';
 import 'package:instant_dating/components/gradient_opacity.dart';
+import 'package:provider/provider.dart';
+import 'package:instant_dating/services/user_repository.dart';
 
 final _firestore = Firestore.instance;
 
 class AcceptedRequestsScreen extends StatefulWidget {
-  AcceptedRequestsScreen({this.key, this.user});
+  AcceptedRequestsScreen({this.key});
 
   static final id = 'accepted_requests_screen';
   final key;
-  final UserAccount user;
 
   @override
   _AcceptedRequestsScreenState createState() => _AcceptedRequestsScreenState();
@@ -22,13 +22,14 @@ class AcceptedRequestsScreen extends StatefulWidget {
 class _AcceptedRequestsScreenState extends State<AcceptedRequestsScreen> {
   @override
   Widget build(BuildContext context) {
-    var loggedUser = widget.user;
+    var user = Provider.of<UserRepository>(context).user;
     SizeConfig().init(context);
 
     return StreamBuilder<QuerySnapshot>(
+      //TODO: Refactor Logic part
       stream: _firestore
           .collection('requests')
-          .where('receiver', isEqualTo: loggedUser.email)
+          .where('receiver', isEqualTo: user.email)
           .where('state', isEqualTo: 'accepted')
           .snapshots(),
       builder: (context, snapshot) {
