@@ -5,19 +5,19 @@ import 'package:instant_dating/components/gradient_opacity.dart';
 import 'package:instant_dating/screens/VisitedUserScreen/visited_user_screen.dart';
 import 'package:instant_dating/services/user_repository.dart';
 import 'package:instant_dating/services/size_config.dart';
+import 'package:provider/provider.dart';
 
 final _firestore = Firestore.instance;
 
 class UsersList extends StatelessWidget {
-  UsersList({this.loggedUserId, this.user});
-
-  final String loggedUserId;
-  final dynamic user;
 
   @override
   Widget build(BuildContext context) {
+    var userEmail = Provider.of<UserRepository>(context).userEmail;
+    var userUid = Provider.of<UserRepository>(context).userUid;
+
     SizeConfig().init(context);
-    UserRepository profileDataManager = UserRepository();
+    UserRepository userRepository = UserRepository();
 
     return StreamBuilder<QuerySnapshot>(
       stream: _firestore.collection('users').snapshots(),
@@ -32,10 +32,10 @@ class UsersList extends StatelessWidget {
         final usersDocs = snapshot.data.documents;
         List<Padding> usersDocsDecoded = [];
         for (var userInfo in usersDocs) {
-          if (userInfo.data['id'] != loggedUserId) {
+          if (userInfo.data['id'] != userUid) {
             var receiverUserEmail = userInfo.data['email'];
             var userImage = userInfo.data['imageUrl'];
-            var userId = userInfo.data['id'];
+            var receiverUserUid = userInfo.data['uid'];
             print(receiverUserEmail);
             // var userLatitude = userInfo.data['position'].latitude;
             // var userLongitude = userInfo.data['position'].longitude;
@@ -85,13 +85,13 @@ class UsersList extends StatelessWidget {
                                 userImage: userImage,
                                 //change with name and surname
                                 userEmail: receiverUserEmail,
-                                userId: userId,
+                                userUid: receiverUserUid,
                               ),
                             ),
                           );
                         },
                         child: Hero(
-                          tag: userId,
+                          tag: userUid,
                           child: GradientOpacity(),
                         ),
                       ),
@@ -118,8 +118,8 @@ class UsersList extends StatelessWidget {
                               color: Colors.transparent,
                               child: InkWell(
                                 onTap: () async {
-                                  await profileDataManager.sendPoke(
-                                      receiverUserEmail, user);
+                                  await userRepository.sendPoke(
+                                      receiverUserEmail, userEmail, userUid);
                                   Scaffold.of(context).showSnackBar(
                                     SnackBar(
                                       content: Text('Poke inviato'),

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:instant_dating/screens/HomeScreen/components/custom_shape_clipper.dart';
-import 'package:instant_dating/components/UsersList.dart';
+import 'package:instant_dating/components/users_list.dart';
 import 'package:instant_dating/services/size_config.dart';
 import 'package:instant_dating/screens/HomeScreen/components/choice_chip.dart';
-import 'package:provider/provider.dart';
-import 'package:instant_dating/services/user_repository.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({this.key});
@@ -31,7 +29,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var user = Provider.of<UserRepository>(context).user;
     SizeConfig().init(context);
 
     return SafeArea(
@@ -123,10 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 )
               ],
             ),
-            UsersList(
-              loggedUserId: user.uid,
-              user: user,
-            ),
+            UsersList(),
           ],
         ),
       ),

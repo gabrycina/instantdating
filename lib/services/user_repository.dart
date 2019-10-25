@@ -12,10 +12,21 @@ enum Status { Uninitialized, Authenticated, Authenticating, Unauthenticated }
 
 class UserRepository with ChangeNotifier{
   FirebaseAuth _auth;
-  FirebaseUser _user;
   GoogleSignIn _googleSignIn;
   Status _status = Status.Uninitialized;
   final _firestore = Firestore.instance;
+  Map<String, dynamic> _user = {
+    "nickname" : String,
+    "age" : int,
+    "bio" : String,
+    "email" : String,
+    "uid" : String,
+    "imageUrl" : String,
+    "lastPosition" : GeoPoint,
+    //I don't know which type to choose for this one
+    "subscribedInterest" : String,
+    "token" : String,
+  };
 
   //TODO:Review Shared Preferences thing (Saving data locally)
   SharedPreferences prefs;
@@ -33,21 +44,23 @@ class UserRepository with ChangeNotifier{
     if (firebaseUser == null) {
       _status = Status.Unauthenticated;
     } else {
-      _user = firebaseUser;
+      _user["email"] = firebaseUser.email;
+      _user["uid"] = firebaseUser.uid;
       _status = Status.Authenticated;
     }
     notifyListeners();
   }
 
   Status get status => _status;
-  FirebaseUser get user => _user;
+  String get userEmail => _user["email"];
+  String get userUid => _user["uid"];
 
   Future<bool> signIn(String email, String password) async {
     try {
       _status = Status.Authenticating;
       notifyListeners();
       await _auth.signInWithEmailAndPassword(email: email, password: password);
-      setupUser();
+      await setupUser();
       return true;
     } catch (e) {
       _status = Status.Unauthenticated;
@@ -68,7 +81,7 @@ class UserRepository with ChangeNotifier{
         idToken: googleAuth.idToken,
       );
       await _auth.signInWithCredential(credential);
-      setupUser();
+      await setupUser();
       return true;
     } catch (e) {
       print(e);
@@ -76,7 +89,6 @@ class UserRepository with ChangeNotifier{
       notifyListeners();
       return false;
     }
-
   }
 
   Future signOut() async {
@@ -88,14 +100,19 @@ class UserRepository with ChangeNotifier{
     return Future.delayed(Duration.zero);
   }
 
-  Future<void> isNewUserAndSetup(FirebaseUser user) async {
+  Future<void> setupUser() async {
+    await isNewUserAndSetup(_user["email"], _user["uid"]);
+    await listenCurrentUserLocation(_user["uid"]);
+  }
+
+  Future<void> isNewUserAndSetup(String userEmail, String userUid) async {
     prefs = await SharedPreferences.getInstance();
 
-    if (user != null) {
+    if (userEmail != null && userUid != null) {
       // Check is already sign up
       final QuerySnapshot result = await _firestore
           .collection('users')
-          .where('id', isEqualTo: user.uid)
+          .where('uid', isEqualTo: userUid)
           .getDocuments();
 
       final List<DocumentSnapshot> documents = result.documents;
@@ -104,26 +121,28 @@ class UserRepository with ChangeNotifier{
         // Create user data into the server if is a new user
         _firestore
             .collection('users')
-            .document(user.uid)
+            .document(userUid)
             .setData({
-          'id': user.uid,
-          'email' : user.email,
+          'uid': userUid,
+          'email' : userEmail,
+          'age' : 0,
           'lastPosition': GeoPoint(0, 0), //Starts from the Null island!
           'token': await NotificationHandler().getToken(),
           'bio' : '',
           'imageUrl' : 'https://images.unsplash.com/photo-1552162864-987ac51d1177?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1000&q=80',
           'nickname' : '',
-          'subInterests' : '', //This should be a list of interests titles :)
+          'subscribedInterests' : '', //This should be a list of interests titles :)
         });
 
         // Write data to local
         //TODO:Make Login persistent
-        await prefs.setString('email', user.email);
+        await prefs.setString('email', userEmail);
         await prefs.setString('position', GeoPoint(0, 0).toString());
         await prefs.setString('token', await NotificationHandler().getToken());
 
         //TODO: Insert Image, let it set up by the user
         //await prefs.setString('profileImage', loggedUser.photoUrl);
+        Fluttertoast.showToast(msg: "Signed Up!");
       } else {
         // Write data to local
         //TODO:Make Login persistent
@@ -133,8 +152,8 @@ class UserRepository with ChangeNotifier{
 
         //TODO: Insert Image, let it set up by the user
         //await prefs.setString('profileImage', documents[0]['profileImage']);
+        Fluttertoast.showToast(msg: "Signed In!");
       }
-      Fluttertoast.showToast(msg: "Signed In!");
     } else {
       Fluttertoast.showToast(msg: "Sign In Failed :(");
     }
@@ -143,6 +162,7 @@ class UserRepository with ChangeNotifier{
 
   Future<void> listenCurrentUserLocation(String uid) async {
     var location = new Location();
+    await location.requestPermission();
 
     DocumentReference docRef =
         _firestore.collection('users').document(uid);
@@ -159,21 +179,22 @@ class UserRepository with ChangeNotifier{
         'lastPosition':
             GeoPoint(currentLocation.latitude, currentLocation.longitude),
       });
+      print("Subscribed to Current Location Stream");
     });
 
     if (uid == "stop") {
       // user navigated away!
       dataSub.cancel();
-      print("Location Stream subscription stopped");
+      print("Current Location Stream subscription stopped");
     }
   }
 
 
-  Future<void> sendPoke(String receiverUserEmail, FirebaseUser user) async {
-    if (user != null) {
+  Future<void> sendPoke(String receiverUserEmail, String userEmail, String userUid) async {
+    if (userEmail != null && userUid != null) {
       DocumentSnapshot loggedUserDocRef = await _firestore
         .collection('users')
-        .document(user.uid)
+        .document(userUid)
         .get();
 
       //Hashes the timestamp to generate an unique id for the request
@@ -184,8 +205,8 @@ class UserRepository with ChangeNotifier{
           .collection('requests')
           .document(reqId)
           .setData({
-        'id' : reqId,
-        'sender': user.email,
+        'uid' : reqId,
+        'sender': userEmail,
         'receiver' : receiverUserEmail,
         'sentFrom': loggedUserDocRef.data['lastPosition'],  //Actual position of the sender
         'sentAt': DateTime.now(),
@@ -197,8 +218,6 @@ class UserRepository with ChangeNotifier{
     }
   }
 
-  void setupUser() async {
-    await isNewUserAndSetup(_user);
-    await listenCurrentUserLocation(_user.uid);
-  }
+
+
 }

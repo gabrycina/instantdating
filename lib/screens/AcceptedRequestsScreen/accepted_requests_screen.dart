@@ -22,14 +22,14 @@ class AcceptedRequestsScreen extends StatefulWidget {
 class _AcceptedRequestsScreenState extends State<AcceptedRequestsScreen> {
   @override
   Widget build(BuildContext context) {
-    var user = Provider.of<UserRepository>(context).user;
+    var userEmail = Provider.of<UserRepository>(context).userEmail;
     SizeConfig().init(context);
 
     return StreamBuilder<QuerySnapshot>(
       //TODO: Refactor Logic part
       stream: _firestore
           .collection('requests')
-          .where('receiver', isEqualTo: user.email)
+          .where('receiver', isEqualTo: userEmail)
           .where('state', isEqualTo: 'accepted')
           .snapshots(),
       builder: (context, snapshot) {

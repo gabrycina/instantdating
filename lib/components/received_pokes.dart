@@ -5,13 +5,12 @@ import 'package:instant_dating/components/gradient_opacity.dart';
 import 'package:instant_dating/screens/VisitedUserScreen/visited_user_screen.dart';
 import 'package:instant_dating/services/size_config.dart';
 import 'package:instant_dating/screens/PokesScreen/components/SwipeAnimation/swipe_card.dart';
+import 'package:instant_dating/services/user_repository.dart';
+import 'package:provider/provider.dart';
 
 final _firestore = Firestore.instance;
 
 class ReceivedPokes extends StatefulWidget {
-  ReceivedPokes({this.accountEmail});
-
-  final String accountEmail;
 
   @override
   _ReceivedPokesState createState() => _ReceivedPokesState();
@@ -23,13 +22,13 @@ class _ReceivedPokesState extends State<ReceivedPokes> {
 
   @override
   Widget build(BuildContext context) {
-    var accountEmail = widget.accountEmail;
+    var userEmail = Provider.of<UserRepository>(context).userEmail;
 
     SizeConfig().init(context);
     return StreamBuilder<QuerySnapshot>(
       stream: _firestore
           .collection('requests')
-          .where('receiver', isEqualTo: accountEmail)
+          .where('receiver', isEqualTo: userEmail)
           .snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData)
