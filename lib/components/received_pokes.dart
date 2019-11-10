@@ -103,9 +103,9 @@ class _ReceivedPokesState extends State<ReceivedPokes> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (cxt) => VisitedUser(
-                                      userImage: senderImage,
+                                      receiverUserImage: senderImage,
                                       //change with name and surname
-                                      userEmail: senderEmail,
+                                      receiverUserEmail: senderEmail,
                                     ),
                                   ),
                                 );

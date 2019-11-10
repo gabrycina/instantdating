@@ -8,11 +8,14 @@ import 'components/panel_title.dart';
 import 'components/user_image.dart';
 
 class VisitedUser extends StatelessWidget {
-  VisitedUser({this.userImage, this.userEmail, this.userUid});
+  VisitedUser({this.receiverUserImage, this.receiverUserEmail, this.receiverUserUid, this.receiverUserNickname, this.receiverUserAge, this.receiverUserBio});
 
-  final String userImage;
-  final String userEmail;
-  final String userUid;
+  final String receiverUserImage;
+  final String receiverUserEmail;
+  final String receiverUserUid;
+  final String receiverUserNickname;
+  final int receiverUserAge;
+  final String receiverUserBio;
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +28,9 @@ class VisitedUser extends StatelessWidget {
             fit: StackFit.expand,
             children: <Widget>[
               UserImage(
-                heroTag: userEmail,
-                image: userImage,
-                userId: userUid,
+                heroTag: receiverUserEmail,
+                image: receiverUserImage,
+                userId: receiverUserUid,
               ),
               Panel(
                 screenSize: MediaQuery.of(context).size.height,
@@ -54,7 +57,7 @@ class VisitedUser extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text(
-                                'Christian Arduino, 19',
+                                '$receiverUserNickname, $receiverUserAge',
                                 style: TextStyle(
                                   fontSize: SizeConfig.horizontal * 6,
                                 ),
@@ -94,7 +97,7 @@ class VisitedUser extends StatelessWidget {
                               Padding(
                                 padding: EdgeInsets.symmetric(vertical: 8.0),
                                 child: Text(
-                                  'Duis feugiat commodo condimentum. Praesent arcu odio, molestie sit amet euismod nec, eleifend vel ligula. Vivamus accumsan ligula in erat porta, a suscipit orci cursus. Etiam eget egestas felis. Quisque porta tortor et odio condimentum, in vestibulum lectus sagittis. Nulla quis lorem sed ex tincidunt mollis non a lectus. Vivamus convallis, orci id semper dignissim, purus quam tempor velit, a volutpat tortor ex nec lorem. Phasellus at luctus est. Duis at tellus finibus, vulputate odio a, convallis velit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.',
+                                  '$receiverUserBio',
                                   style: TextStyle(
                                     fontSize: SizeConfig.horizontal * 3.5,
                                   ),

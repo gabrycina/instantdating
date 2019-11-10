@@ -34,9 +34,11 @@ class UsersList extends StatelessWidget {
         for (var userInfo in usersDocs) {
           if (userInfo.data['id'] != userUid) {
             var receiverUserEmail = userInfo.data['email'];
-            var userImage = userInfo.data['imageUrl'];
+            var receiverUserImage = userInfo.data['imageUrl'];
             var receiverUserUid = userInfo.data['uid'];
-            print(receiverUserEmail);
+            var receiverUserNickname = userInfo.data['nickname'];
+            var receiverUserAge = userInfo.data['age'];
+            var receiverUserBio = userInfo.data['bio'];
             // var userLatitude = userInfo.data['position'].latitude;
             // var userLongitude = userInfo.data['position'].longitude;
 
@@ -57,7 +59,7 @@ class UsersList extends StatelessWidget {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: CachedNetworkImage(
-                            imageUrl: userImage,
+                            imageUrl: receiverUserImage,
                             imageBuilder: (context, imageProvider) {
                               return Container(
                                 decoration: BoxDecoration(
@@ -82,16 +84,18 @@ class UsersList extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                               builder: (cxt) => VisitedUser(
-                                userImage: userImage,
-                                //change with name and surname
-                                userEmail: receiverUserEmail,
-                                userUid: receiverUserUid,
+                                receiverUserImage: receiverUserImage,
+                                receiverUserEmail: receiverUserEmail,
+                                receiverUserUid: receiverUserUid,
+                                receiverUserNickname: receiverUserNickname,
+                                receiverUserAge: receiverUserAge,
+                                receiverUserBio: receiverUserBio,
                               ),
                             ),
                           );
                         },
                         child: Hero(
-                          tag: userUid,
+                          tag: receiverUserUid,
                           child: GradientOpacity(),
                         ),
                       ),
@@ -104,7 +108,7 @@ class UsersList extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            'Christian, 18',
+                            '$receiverUserNickname, $receiverUserAge',
                             style: TextStyle(
                               fontSize: SizeConfig.horizontal * 4,
                               color: Colors.white,

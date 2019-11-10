@@ -43,6 +43,8 @@ class _AcceptedRequestsScreenState extends State<AcceptedRequestsScreen> {
         final requestsDocs = snapshot.data.documents;
         List<Padding> usersDocsDecoded = [];
         for (var requestDoc in requestsDocs) {
+          var requestId = requestDoc.data['id'];
+          print(requestId);
           var senderEmail = requestDoc.data['sender'];
           var senderImageUrl = 'https://images.unsplash.com/photo-1552162864-987ac51d1177?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1000&q=80';
           // var userLatitude = userInfo.data['position'].latitude;
@@ -58,7 +60,7 @@ class _AcceptedRequestsScreenState extends State<AcceptedRequestsScreen> {
                     padding: EdgeInsets.symmetric(
                         horizontal: SizeConfig.horizontal * 1, vertical: 5),
                     child: Hero(
-                      tag: senderEmail,
+                      tag: requestId,
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
@@ -89,15 +91,15 @@ class _AcceptedRequestsScreenState extends State<AcceptedRequestsScreen> {
                           context,
                           MaterialPageRoute(
                             builder: (cxt) => VisitedUser(
-                              userImage: senderImageUrl,
+                              receiverUserImage: senderImageUrl,
                               //change with name and surname
-                              userEmail: senderEmail,
+                              receiverUserEmail: senderEmail,
                             ),
                           ),
                         );
                       },
                       child: Hero(
-                        tag: 'opacity$senderImageUrl',
+                        tag: '$requestId',
                         child: GradientOpacity(),
                       ),
                     ),

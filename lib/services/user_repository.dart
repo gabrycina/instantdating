@@ -46,6 +46,18 @@ class UserRepository with ChangeNotifier{
     } else {
       _user["email"] = firebaseUser.email;
       _user["uid"] = firebaseUser.uid;
+
+      final QuerySnapshot result = await _firestore
+          .collection('users')
+          .where('uid', isEqualTo: _user["uid"])
+          .getDocuments();
+
+      final List<DocumentSnapshot> documents = result.documents;
+
+      _user["nickname"] = documents[0]["nickname"];
+      _user["age"] = documents[0]["age"];
+      _user["bio"] = documents[0]["bio"];
+
       _status = Status.Authenticated;
     }
     notifyListeners();
@@ -54,6 +66,9 @@ class UserRepository with ChangeNotifier{
   Status get status => _status;
   String get userEmail => _user["email"];
   String get userUid => _user["uid"];
+  String get userNickname => _user["nickname"];
+  int get userAge => _user["age"];
+  String get userBio => _user["bio"];
 
   Future<bool> signIn(String email, String password) async {
     try {
@@ -218,6 +233,21 @@ class UserRepository with ChangeNotifier{
     }
   }
 
+  Future<void> editUserInfo({nickname, age, bio}) async {
+    await _firestore.collection("users").document(_user["uid"]).setData(
+      {
+        "nickname" : nickname,
+        "age" : age,
+        "bio" : bio
+      },
+      merge: true
+    );
 
+    _user["nickname"] = nickname;
+    _user["age"] = age;
+    _user["bio"] = bio;
+
+    notifyListeners();
+  }
 
 }

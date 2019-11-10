@@ -6,6 +6,7 @@ import 'package:instant_dating/services/user_repository.dart';
 import 'package:instant_dating/services/size_config.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:provider/provider.dart';
+import 'package:instant_dating/screens/EditUserInfoScreen/edit_user_info_screen.dart';
 
 class AccountScreen extends StatefulWidget {
   AccountScreen({this.key});
@@ -18,8 +19,25 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _AccountScreenState extends State<AccountScreen> {
+  Map<String, dynamic> userInfo;
+  var isInitialized = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    setState(() {
+      userInfo = {
+        "nickname": Provider.of<UserRepository>(context).userNickname,
+        "age": Provider.of<UserRepository>(context).userAge,
+        "bio": Provider.of<UserRepository>(context).userBio,
+      };
+    });
+
     SizeConfig().init(context);
     return Scaffold(
       body: SafeArea(
@@ -29,7 +47,8 @@ class _AccountScreenState extends State<AccountScreen> {
             SizedBox.expand(
               child: CachedNetworkImage(
                 //TODO: Remove static placeholders
-                imageUrl: 'https://images.unsplash.com/photo-1552162864-987ac51d1177?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1000&q=80',
+                imageUrl:
+                    'https://images.unsplash.com/photo-1552162864-987ac51d1177?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1000&q=80',
                 fit: BoxFit.cover,
               ),
             ),
@@ -66,14 +85,28 @@ class _AccountScreenState extends State<AccountScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
                                 Text(
-                                  'Christian Arduino, 19',
+                                  userInfo != null ? '${userInfo["nickname"]}, ${userInfo["age"].toString()}' : 'loading',
                                   style: TextStyle(
                                     fontSize: SizeConfig.horizontal * 6,
                                   ),
                                 ),
-                                Icon(
-                                  Icons.edit,
-                                  size: SizeConfig.horizontal * 7,
+                                GestureDetector(
+                                  child: Icon(
+                                    Icons.edit,
+                                    size: SizeConfig.horizontal * 7,
+                                  ),
+                                  onTap: () async {
+                                    var result = await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              EditUserInfoScreen()),
+                                    );
+                                    await Provider.of<UserRepository>(context).editUserInfo(nickname: result["nickname"], age: result["age"], bio: result["bio"]);
+                                    setState(() {
+
+                                    });
+                                  },
                                 )
                               ],
                             ),
@@ -112,7 +145,7 @@ class _AccountScreenState extends State<AccountScreen> {
                             Padding(
                               padding: EdgeInsets.symmetric(vertical: 8.0),
                               child: Text(
-                                'Duis feugiat commodo condimentum. Praesent arcu odio, molestie sit amet euismod nec, eleifend vel ligula. Vivamus accumsan ligula in erat porta, a suscipit orci cursus. Etiam eget egestas felis. Quisque porta tortor et odio condimentum, in vestibulum lectus sagittis. Nulla quis lorem sed ex tincidunt mollis non a lectus. Vivamus convallis, orci id semper dignissim, purus quam tempor velit, a volutpat tortor ex nec lorem. Phasellus at luctus est. Duis at tellus finibus, vulputate odio a, convallis velit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.',
+                                userInfo != null ? '${userInfo["bio"]}' : 'loading',
                                 style: TextStyle(
                                   fontSize: SizeConfig.horizontal * 3.5,
                                 ),
@@ -135,4 +168,5 @@ class _AccountScreenState extends State<AccountScreen> {
       ),
     );
   }
+
 }
